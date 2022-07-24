@@ -11,7 +11,8 @@ function draw() {
   let sides = document.getElementById("sidesRange").value;
   let depth = document.getElementById("depthRange").value;
   outwards = document.getElementById("orientationCheck").checked ? -1 : 1;
-  drawPoly(sides, depth, 2);
+  let strategy = document.getElementById("strategySelect").value;
+  drawPoly(sides, depth, 2, strategy);
 }
 
 function redraw() {
@@ -34,22 +35,22 @@ function drawSquare(degree = 0, size = 1) {
         ? "#000000"
         : "#" + Math.floor(Math.random() * 16777215).toString(16);
     ctx.strokeStyle = randomColor;
-    drawLine(
+    drawKochLine(
       [canvas.width / 3, canvas.height / 3],
       [(2 * canvas.width) / 3, canvas.height / 3],
       degree
     );
-    drawLine(
+    drawKochLine(
       [(2 * canvas.width) / 3, canvas.height / 3],
       [(2 * canvas.width) / 3, (2 * canvas.height) / 3],
       degree
     );
-    drawLine(
+    drawKochLine(
       [(2 * canvas.width) / 3, (2 * canvas.height) / 3],
       [canvas.width / 3, (2 * canvas.height) / 3],
       degree
     );
-    drawLine(
+    drawKochLine(
       [canvas.width / 3, (2 * canvas.height) / 3],
       [canvas.width / 3, canvas.height / 3],
       degree
@@ -59,8 +60,8 @@ function drawSquare(degree = 0, size = 1) {
   }
 }
 
-function drawPoly(sides = 4, depth = 0, size = 1) {
-  let counter = size;
+function drawPoly(sides, depth = 0, thickness = 1, strategy) {
+  let counter = thickness;
   while (counter >= 1) {
     ctx.beginPath();
     ctx.lineWidth = counter;
@@ -70,29 +71,75 @@ function drawPoly(sides = 4, depth = 0, size = 1) {
         : "#" + Math.floor(Math.random() * 16777215).toString(16);
     ctx.strokeStyle = randomColor;
 
-    let scaleFactor = (2 * sides) / 3;
-    let length = Math.min(
-      canvas.width / scaleFactor,
-      canvas.height / scaleFactor
-    );
-    let start = [
-      Math.max(length / 3, canvas.width / 3 - length / 2),
-      Math.max(length / 3, canvas.height / 3 - length / 2),
-    ];
-    let end = [start[0] + length, start[1]];
-    for (let i = 0; i < sides; i++) {
-      drawLine(start, end, depth);
-      let next = rotateAround(start, end, (-(sides - 2) * Math.PI) / sides);
-      start = end;
-      end = next;
+    switch (strategy) {
+      case "koch":
+        drawKochPoly(sides, depth);
+        break;
+      case "sierpinski":
+        // Init
+        let scaleFactor = (2 * sides) / 3;
+        let length = Math.min(
+          canvas.width / scaleFactor,
+          canvas.height / scaleFactor
+        );
+
+        let start = [canvas.width / 2, 32];
+        let end = rotateAround(
+          start,
+          [start[0] + length, start[1]],
+          (-(sides - 2) * Math.PI) / sides
+        );
+        drawSierpPoly(sides, depth, start, end);
+        break;
     }
+
     ctx.stroke();
     counter--;
   }
 }
 
-function drawLine(start, end, degree = 0) {
-  if (degree <= 0) {
+function drawKochPoly(sides, depth) {
+  // Init
+  let scaleFactor = (2 * sides) / 3;
+  let length = Math.min(
+    canvas.width / scaleFactor,
+    canvas.height / scaleFactor
+  );
+  let start = [canvas.width / 2, 32];
+  let end = [start[0] + length, start[1]];
+  end = rotateAround(start, end, (-(sides - 2) * Math.PI) / sides);
+
+  for (let i = 0; i < sides; i++) {
+    drawKochLine(start, end, depth);
+    let next = rotateAround(start, end, (-(sides - 2) * Math.PI) / sides);
+    start = end;
+    end = next;
+  }
+}
+
+function drawSierpPoly(sides, depth, startPoint, endPoint) {
+  if (depth < 0) {
+    return;
+  }
+  let start = startPoint;
+  let end = endPoint;
+
+  for (let i = 0; i < sides; i++) {
+    if (depth == 0) {
+      console.log("here");
+      drawKochLine(start, end);
+    } else {
+      let middle = getMiddle(start, end);
+      drawSierpPoly(sides, depth - 1, start, middle);
+    }
+    let next = rotateAround(start, end, (-(sides - 2) * Math.PI) / sides);
+      start = end;
+      end = next;
+  }
+}
+
+function drawKochLine(start, end, depth = 0) {
+  if (depth <= 0) {
     ctx.moveTo(start[0], start[1]);
     ctx.lineTo(end[0], end[1]);
   } else {
@@ -104,11 +151,11 @@ function drawLine(start, end, degree = 0) {
       start[0] + (-2 * (start[0] - end[0])) / 3,
       start[1] + (-2 * (start[1] - end[1])) / 3,
     ];
-    let midPoint = rotateAround(third, twoThird, outwards * Math.PI / 3);
-    drawLine(start, third, degree - 1);
-    drawLine(third, midPoint, degree - 1);
-    drawLine(midPoint, twoThird, degree - 1);
-    drawLine(twoThird, end, degree - 1);
+    let midPoint = rotateAround(third, twoThird, (outwards * Math.PI) / 3);
+    drawKochLine(start, third, depth - 1);
+    drawKochLine(third, midPoint, depth - 1);
+    drawKochLine(midPoint, twoThird, depth - 1);
+    drawKochLine(twoThird, end, depth - 1);
   }
 }
 
@@ -124,14 +171,20 @@ function rotateAround(p, p0, ang) {
   return [p0[0] + rotated[0], p0[1] + rotated[1]];
 }
 
+function getMiddle(a, b) {
+  return [a[0] + (b[0] - a[0]) / 2, a[1] + (b[1] - a[1]) / 2];
+}
+
 function initListeners() {
   // Listeners
   let liveUpdateCheck = document.getElementById("liveUpdate");
   let invertedCheck = document.getElementById("orientationCheck");
 
   let sidesRange = document.getElementById("sidesRange");
+  let sidesLabel = document.getElementById("sidesLabel");
+  sidesLabel.innerText = sidesRange.value;
   sidesRange.addEventListener("input", (e) => {
-    document.getElementById("sidesLabel").innerText = sidesRange.value;
+    sidesLabel.innerText = sidesRange.value;
     if (liveUpdateCheck.checked) {
       redraw();
     }
@@ -166,8 +219,15 @@ function initListeners() {
     }
   });
 
+  let strategySelect = document.getElementById("strategySelect");
+  strategySelect.addEventListener("change", (e) => {
+    if (liveUpdateCheck.checked) {
+      redraw();
+    }
+  });
+
   document.addEventListener("keydown", (e) => {
-    switch(e.key.toLowerCase()) {
+    switch (e.key.toLowerCase()) {
       case "c":
         clearButton.click();
         break;

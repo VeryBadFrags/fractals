@@ -18,7 +18,7 @@
     <div id="app">
       <canvas
         id="canvas"
-        height="400px"
+        height="512px"
         style="border: 1px solid #d3d3d3"
       ></canvas>
       <div class="row p-3">
@@ -26,25 +26,25 @@
           <div class="card">
             <div class="card-body">
               <label for="sidesRange" class="form-label"
-                >Sides: <span id="sidesLabel">3</span></label
+                >Sides (<b>+</b> / <b>-</b>): <span id="sidesLabel">3</span></label
               >
               <input
                 type="range"
                 class="form-range"
                 id="sidesRange"
-                min="1"
+                min="3"
                 max="10"
                 value="3"
               />
               <label for="customRange1" class="form-label"
-                >Depth (+ / -): <span id="depthLabel">3</span></label
+                >Depth (<b>[</b> / <b>]</b>): <span id="depthLabel">3</span></label
               >
               <input
                 type="range"
                 class="form-range"
                 id="depthRange"
                 min="0"
-                max="7"
+                max="6"
                 value="3"
               />
               <div class="form-check">
@@ -55,7 +55,7 @@
                   id="orientationCheck"
                 />
                 <label class="form-check-label" for="orientationCheck">
-                  Inverted (I)
+                  Inverted (<b>I</b>)
                 </label>
               </div>
             </div>
@@ -89,7 +89,11 @@
         <div class="col-12 col-lg-4 mb-3">
           <div class="card">
             <div class="card-body">
-              <div>Strategy: Koch</div>
+              <label for="strategySelect">Type</label>
+              <select class="form-select" aria-label="Strategy" id="strategySelect">
+                <option value="koch" selected>Koch</option>
+                <option value="sierpinski">Sierpiński</option>
+              </select>
             </div>
           </div>
         </div>
