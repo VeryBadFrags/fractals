@@ -72,21 +72,17 @@
         <div class="col-12 col-md-4">
           <div class="card">
             <div class="card-body">
-              <button type="button" class="btn btn-primary" onclick="draw()">
+              <button type="button" class="btn btn-primary" id="drawButton">
                 Draw
               </button>
               <button
                 type="button"
                 class="btn btn-success"
-                onclick="clearCanvas(); draw();"
+                id="drawClearButton"
               >
                 Clear & Draw
               </button>
-              <button
-                type="button"
-                class="btn btn-danger"
-                onclick="clearCanvas()"
-              >
+              <button type="button" class="btn btn-danger" id="clearButton">
                 Clear
               </button>
             </div>
@@ -94,6 +90,6 @@
         </div>
       </div>
     </div>
-    <script src="/main.js"></script>
+    <script type="module" src="/main.js"></script>
   </body>
 </html>

@@ -8,7 +8,7 @@ const ctx = canvas.getContext("2d");
 function draw() {
   let sides = document.getElementById("sidesRange").value;
   let depth = document.getElementById("depthRange").value;
-  drawPoly(sides, depth);
+  drawPoly(sides, depth, 2);
 }
 
 function clearCanvas() {
@@ -52,25 +52,36 @@ function drawSquare(degree = 0, size = 1) {
   }
 }
 
-function drawPoly(sides = 4, depth = 0) {
-  ctx.beginPath();
-  let scaleFactor = (2 * sides) / 3;
-  let length = Math.min(
-    canvas.width / scaleFactor,
-    canvas.height / scaleFactor
-  );
-  let start = [
-    Math.max(length/3, canvas.width / 3 - length/2),
-    Math.max(length/3, canvas.height / 3 - length/2),
-  ];
-  let end = [start[0] + length, start[1]];
-  for (let i = 0; i < sides; i++) {
-    drawLine(start, end, depth);
-    let next = rotateAround(start, end, (-(sides - 2) * Math.PI) / sides);
-    start = end;
-    end = next;
+function drawPoly(sides = 4, depth = 0, size = 1) {
+  let counter = size;
+  while (counter >= 1) {
+    ctx.beginPath();
+    ctx.lineWidth = counter;
+    let randomColor =
+      counter == 1
+        ? "#000000"
+        : "#" + Math.floor(Math.random() * 16777215).toString(16);
+    ctx.strokeStyle = randomColor;
+
+    let scaleFactor = (2 * sides) / 3;
+    let length = Math.min(
+      canvas.width / scaleFactor,
+      canvas.height / scaleFactor
+    );
+    let start = [
+      Math.max(length / 3, canvas.width / 3 - length / 2),
+      Math.max(length / 3, canvas.height / 3 - length / 2),
+    ];
+    let end = [start[0] + length, start[1]];
+    for (let i = 0; i < sides; i++) {
+      drawLine(start, end, depth);
+      let next = rotateAround(start, end, (-(sides - 2) * Math.PI) / sides);
+      start = end;
+      end = next;
+    }
+    ctx.stroke();
+    counter--;
   }
-  ctx.stroke();
 }
 
 function drawLine(start, end, degree = 0) {
@@ -126,6 +137,19 @@ function initListeners() {
       clearCanvas();
       draw();
     }
+  });
+
+  document.getElementById("drawButton").addEventListener("click", (e) => {
+    draw();
+  });
+
+  document.getElementById("drawClearButton").addEventListener("click", (e) => {
+    clearCanvas();
+    draw();
+  });
+
+  document.getElementById("clearButton").addEventListener("click", (e) => {
+    clearCanvas();
   });
 }
 
