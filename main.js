@@ -182,11 +182,23 @@ function initListeners() {
         break;
       case "+":
       case "=":
-        depthRange.value++;
+        sidesRange.value++;
+        sidesRange.dispatchEvent(new Event("input"));
         break;
       case "_":
       case "-":
+        sidesRange.value--;
+        sidesRange.dispatchEvent(new Event("input"));
+        break;
+      case "[":
+      case "{":
         depthRange.value--;
+        depthRange.dispatchEvent(new Event("input"));
+        break;
+      case "]":
+      case "}":
+        depthRange.value++;
+        depthRange.dispatchEvent(new Event("input"));
         break;
     }
   });
