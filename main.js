@@ -10,13 +10,17 @@ let outwards = 1;
 function draw() {
   let sides = document.getElementById("sidesRange").value;
   let depth = document.getElementById("depthRange").value;
-  outwards = document.getElementById("orientationCheck").checked ? 1 : -1;
+  outwards = document.getElementById("orientationCheck").checked ? -1 : 1;
   drawPoly(sides, depth, 2);
+}
+
+function redraw() {
+  clearCanvas();
+  draw();
 }
 
 function clearCanvas() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  console.log("clear");
 }
 
 function drawSquare(degree = 0, size = 1) {
@@ -123,13 +127,13 @@ function rotateAround(p, p0, ang) {
 function initListeners() {
   // Listeners
   let liveUpdateCheck = document.getElementById("liveUpdate");
+  let invertedCheck = document.getElementById("orientationCheck");
 
   let sidesRange = document.getElementById("sidesRange");
   sidesRange.addEventListener("input", (e) => {
     document.getElementById("sidesLabel").innerText = sidesRange.value;
     if (liveUpdateCheck.checked) {
-      clearCanvas();
-      draw();
+      redraw();
     }
   });
 
@@ -137,37 +141,53 @@ function initListeners() {
   depthRange.addEventListener("input", (e) => {
     document.getElementById("depthLabel").innerText = depthRange.value;
     if (liveUpdateCheck.checked) {
-      clearCanvas();
-      draw();
+      redraw();
     }
   });
 
-  document.getElementById("drawButton").addEventListener("click", (e) => {
+  let drawButton = document.getElementById("drawButton");
+  drawButton.addEventListener("click", (e) => {
     draw();
   });
 
-  document.getElementById("drawClearButton").addEventListener("click", (e) => {
-    clearCanvas();
-    draw();
-  });
+  // document.getElementById("drawClearButton").addEventListener("click", (e) => {
+  //   clearCanvas();
+  //   draw();
+  // });
 
-  document.getElementById("clearButton").addEventListener("click", (e) => {
+  let clearButton = document.getElementById("clearButton");
+  clearButton.addEventListener("click", (e) => {
     clearCanvas();
   });
 
   document.getElementById("orientationCheck").addEventListener("click", (e) => {
     if (liveUpdateCheck.checked) {
-      clearCanvas();
-      draw();
+      redraw();
     }
   });
 
   document.addEventListener("keydown", (e) => {
-    if("d" === e.key.toLowerCase()) {
-      draw();
-    }
-    if("c" === e.key.toLowerCase()) {
-      clearCanvas();
+    switch(e.key.toLowerCase()) {
+      case "c":
+        clearButton.click();
+        break;
+      case "d":
+        drawButton.click();
+        break;
+      case "i":
+        invertedCheck.click();
+        break;
+      case "l":
+        liveUpdateCheck.click();
+        break;
+      case "+":
+      case "=":
+        depthRange.value++;
+        break;
+      case "_":
+      case "-":
+        depthRange.value--;
+        break;
     }
   });
 }

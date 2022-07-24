@@ -53,10 +53,9 @@
                   type="checkbox"
                   value=""
                   id="orientationCheck"
-                  checked
                 />
                 <label class="form-check-label" for="orientationCheck">
-                  Outwards
+                  Inverted (I)
                 </label>
               </div>
             </div>
@@ -65,31 +64,23 @@
         <div class="col-12 col-lg-3">
           <div class="card">
             <div class="card-body">
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="liveUpdate"
-                  checked
-                />
-                <label class="form-check-label" for="liveUpdate">
-                  Live update
-                </label>
+              <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" role="switch" id="liveUpdate" checked>
+                <label class="form-check-label" for="liveUpdate">🔄 Live update (L)</label>
               </div>
               <div class="d-grid gap-2">
               <button type="button" class="btn btn-primary btn-lg" id="drawButton">
-                ✏️ Draw (d)
+                ✏️ Draw (D)
               </button>
-              <button
+              <!-- <button
                 type="button"
                 class="btn btn-success btn-lg"
                 id="drawClearButton"
               >
                 Clear & Draw
-              </button>
+              </button> -->
               <button type="button" class="btn btn-outline-danger btn-lg" id="clearButton">
-                🗑️ Clear (c)
+                🗑️ Clear (C)
               </button>
             </div>
             </div>
