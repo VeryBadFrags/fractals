@@ -3,40 +3,75 @@ let canvas = document.getElementById("canvas");
 canvas.width = document.body.scrollWidth;
 canvas.height = document.body.scrollHeight;
 
-const width = document.body.scrollWidth;
-const height = document.body.scrollHeight;
+const ctx = canvas.getContext("2d");
 
-let ctx = canvas.getContext("2d");
+function draw() {
+  let sides = document.getElementById("sidesRange").value;
+  let depth = document.getElementById("depthRange").value;
+  drawPoly(sides, depth);
+}
 
-drawSquare(4, 2);
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  console.log("clear");
+}
 
 function drawSquare(degree = 0, size = 1) {
+  // ctx.clear();
   let counter = size;
   while (counter >= 1) {
+    ctx.beginPath();
     ctx.lineWidth = counter;
     let randomColor =
       counter == 1
         ? "#000000"
         : "#" + Math.floor(Math.random() * 16777215).toString(16);
     ctx.strokeStyle = randomColor;
-    drawLine([width / 3, height / 3], [(2 * width) / 3, height / 3], degree);
     drawLine(
-      [(2 * width) / 3, height / 3],
-      [(2 * width) / 3, (2 * height) / 3],
+      [canvas.width / 3, canvas.height / 3],
+      [(2 * canvas.width) / 3, canvas.height / 3],
       degree
     );
     drawLine(
-      [(2 * width) / 3, (2 * height) / 3],
-      [width / 3, (2 * height) / 3],
+      [(2 * canvas.width) / 3, canvas.height / 3],
+      [(2 * canvas.width) / 3, (2 * canvas.height) / 3],
       degree
     );
-    drawLine([width / 3, (2 * height) / 3], [width / 3, height / 3], degree);
+    drawLine(
+      [(2 * canvas.width) / 3, (2 * canvas.height) / 3],
+      [canvas.width / 3, (2 * canvas.height) / 3],
+      degree
+    );
+    drawLine(
+      [canvas.width / 3, (2 * canvas.height) / 3],
+      [canvas.width / 3, canvas.height / 3],
+      degree
+    );
     ctx.stroke();
     counter--;
   }
 }
 
-function drawPoly(sides = 4) {}
+function drawPoly(sides = 4, depth = 0) {
+  ctx.beginPath();
+  let scaleFactor = (2 * sides) / 3;
+  let length = Math.min(
+    canvas.width / scaleFactor,
+    canvas.height / scaleFactor
+  );
+  let start = [
+    Math.max(length/3, canvas.width / 3 - length/2),
+    Math.max(length/3, canvas.height / 3 - length/2),
+  ];
+  let end = [start[0] + length, start[1]];
+  for (let i = 0; i < sides; i++) {
+    drawLine(start, end, depth);
+    let next = rotateAround(start, end, (-(sides - 2) * Math.PI) / sides);
+    start = end;
+    end = next;
+  }
+  ctx.stroke();
+}
 
 function drawLine(start, end, degree = 0) {
   if (degree <= 0) {
@@ -71,8 +106,29 @@ function rotateAround(p, p0, ang) {
   return [p0[0] + rotated[0], p0[1] + rotated[1]];
 }
 
-// Listeners
-document.getElementById("depthRange").addEventListener(onchange, (e) => {
-  ctx.clear();
-  console.log("yolo");
-});
+function initListeners() {
+  // Listeners
+  let liveUpdateCheck = document.getElementById("liveUpdate");
+
+  let sidesRange = document.getElementById("sidesRange");
+  sidesRange.addEventListener("input", (e) => {
+    document.getElementById("sidesLabel").innerText = sidesRange.value;
+    if (liveUpdateCheck.checked) {
+      clearCanvas();
+      draw();
+    }
+  });
+
+  let depthRange = document.getElementById("depthRange");
+  depthRange.addEventListener("input", (e) => {
+    document.getElementById("depthLabel").innerText = depthRange.value;
+    if (liveUpdateCheck.checked) {
+      clearCanvas();
+      draw();
+    }
+  });
+}
+
+initListeners();
+
+draw();
