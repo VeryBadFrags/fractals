@@ -161,6 +161,15 @@ function initListeners() {
       draw();
     }
   });
+
+  document.addEventListener("keydown", (e) => {
+    if("d" === e.key.toLowerCase()) {
+      draw();
+    }
+    if("c" === e.key.toLowerCase()) {
+      clearCanvas();
+    }
+  });
 }
 
 initListeners();
