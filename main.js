@@ -5,9 +5,12 @@ canvas.height = document.body.scrollHeight;
 
 const ctx = canvas.getContext("2d");
 
+let outwards = 1;
+
 function draw() {
   let sides = document.getElementById("sidesRange").value;
   let depth = document.getElementById("depthRange").value;
+  outwards = document.getElementById("orientationCheck").checked ? 1 : -1;
   drawPoly(sides, depth, 2);
 }
 
@@ -97,7 +100,7 @@ function drawLine(start, end, degree = 0) {
       start[0] + (-2 * (start[0] - end[0])) / 3,
       start[1] + (-2 * (start[1] - end[1])) / 3,
     ];
-    let midPoint = rotateAround(third, twoThird, Math.PI / 3);
+    let midPoint = rotateAround(third, twoThird, outwards * Math.PI / 3);
     drawLine(start, third, degree - 1);
     drawLine(third, midPoint, degree - 1);
     drawLine(midPoint, twoThird, degree - 1);
@@ -150,6 +153,13 @@ function initListeners() {
 
   document.getElementById("clearButton").addEventListener("click", (e) => {
     clearCanvas();
+  });
+
+  document.getElementById("orientationCheck").addEventListener("click", (e) => {
+    if (liveUpdateCheck.checked) {
+      clearCanvas();
+      draw();
+    }
   });
 }
 
