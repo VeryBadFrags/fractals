@@ -21,12 +21,26 @@
         height="512px"
         style="border: 1px solid #d3d3d3"
       ></canvas>
+      <div class="row" id="loading">
+        <div class="progress">
+          <div
+            class="progress-bar progress-bar-striped progress-bar-animated"
+            role="progressbar"
+            aria-label="Animated striped example"
+            aria-valuenow="50"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            style="width: 50%"
+          ></div>
+        </div>
+      </div>
       <div class="row p-3">
         <div class="col-12 col-lg-5 mb-3">
           <div class="card">
             <div class="card-body">
               <label for="sidesRange" class="form-label"
-                >Sides (<b>+</b> / <b>-</b>): <span id="sidesLabel">3</span></label
+                >Sides (<b>+</b> / <b>-</b>):
+                <span id="sidesLabel">3</span></label
               >
               <input
                 type="range"
@@ -37,7 +51,8 @@
                 value="3"
               />
               <label for="customRange1" class="form-label"
-                >Depth (<b>[</b> / <b>]</b>): <span id="depthLabel">3</span></label
+                >Depth (<b>[</b> / <b>]</b>):
+                <span id="depthLabel">3</span></label
               >
               <input
                 type="range"
@@ -65,24 +80,40 @@
           <div class="card">
             <div class="card-body">
               <div class="form-check form-switch mb-2">
-                <input class="form-check-input" type="checkbox" role="switch" id="liveUpdate" checked>
-                <label class="form-check-label" for="liveUpdate">🔄 Live update (L)</label>
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="liveUpdate"
+                  checked
+                />
+                <label class="form-check-label" for="liveUpdate"
+                  >🔄 Live update (L)</label
+                >
               </div>
               <div class="d-grid gap-2">
-              <button type="button" class="btn btn-primary btn-lg" id="drawButton">
-                ✏️ Draw (D)
-              </button>
-              <!-- <button
+                <button
+                  type="button"
+                  class="btn btn-primary btn-lg"
+                  id="drawButton"
+                >
+                  ✏️ Draw (D)
+                </button>
+                <!-- <button
                 type="button"
                 class="btn btn-success btn-lg"
                 id="drawClearButton"
               >
                 Clear & Draw
               </button> -->
-              <button type="button" class="btn btn-outline-danger btn-lg" id="clearButton">
-                🗑️ Clear (C)
-              </button>
-            </div>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger btn-lg"
+                  id="clearButton"
+                >
+                  🗑️ Clear (C)
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -90,9 +121,13 @@
           <div class="card">
             <div class="card-body">
               <label for="strategySelect">Type</label>
-              <select class="form-select" aria-label="Strategy" id="strategySelect">
+              <select
+                class="form-select"
+                aria-label="Strategy"
+                id="strategySelect"
+              >
                 <option value="koch" selected>Koch</option>
-                <option value="sierpinski">Sierpiński</option>
+                <option value="sierpinski">Sierpiński sieve</option>
               </select>
             </div>
           </div>

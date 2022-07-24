@@ -8,11 +8,14 @@ const ctx = canvas.getContext("2d");
 let outwards = 1;
 
 function draw() {
+  let loading = document.getElementById("loading");
+  showLoad(loading);
   let sides = document.getElementById("sidesRange").value;
   let depth = document.getElementById("depthRange").value;
   outwards = document.getElementById("orientationCheck").checked ? -1 : 1;
   let strategy = document.getElementById("strategySelect").value;
   drawPoly(sides, depth, 2, strategy);
+  hideLoad(loading);
 }
 
 function redraw() {
@@ -117,7 +120,7 @@ function drawKochPoly(sides, depth) {
   }
 }
 
-function drawSierpPoly(sides, depth, startPoint, endPoint) {
+function drawSierpPoly(sides, depth, startPoint, endPoint, direction = 1) {
   if (depth < 0) {
     return;
   }
@@ -130,11 +133,19 @@ function drawSierpPoly(sides, depth, startPoint, endPoint) {
       drawKochLine(start, end);
     } else {
       let middle = getMiddle(start, end);
-      drawSierpPoly(sides, depth - 1, start, middle);
+      let third = getThird(start, end);
+      let twoThird = getThird(end, start);
+      if(outwards == -1) {
+        drawSierpPoly(sides, depth - 1, start, third, -direction);
+        drawSierpPoly(sides, depth - 1, third, twoThird, -direction);
+        drawSierpPoly(sides, depth - 1, twoThird, end, -direction);
+      } else {
+        drawSierpPoly(sides, depth - 1, start, middle);
+      }
     }
-    let next = rotateAround(start, end, (-(sides - 2) * Math.PI) / sides);
-      start = end;
-      end = next;
+    let next = rotateAround(start, end, direction * (-(sides - 2) * Math.PI) / sides);
+    start = end;
+    end = next;
   }
 }
 
@@ -173,6 +184,10 @@ function rotateAround(p, p0, ang) {
 
 function getMiddle(a, b) {
   return [a[0] + (b[0] - a[0]) / 2, a[1] + (b[1] - a[1]) / 2];
+}
+
+function getThird(a, b) {
+  return [a[0] + (b[0] - a[0]) / 3, a[1] + (b[1] - a[1]) / 3];
 }
 
 function initListeners() {
@@ -262,6 +277,13 @@ function initListeners() {
         break;
     }
   });
+}
+
+function hideLoad(e) {
+  e.style.visibility = "hidden";
+}
+function showLoad(e) {
+  e.style.visibility = "visible";
 }
 
 initListeners();
