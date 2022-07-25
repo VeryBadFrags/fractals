@@ -10,13 +10,20 @@ let ratio = 2;
 
 const loading = document.getElementById("loading");
 
+const sidesRange = document.getElementById("sidesRange");
+const depthRange = document.getElementById("depthRange");
+const ratioRange = document.getElementById("ratioRange");
+const invertedCheck = document.getElementById("orientationCheck");
+
+const liveUpdateCheck = document.getElementById("liveUpdate");
+
 function draw() {
   showElement(loading);
   let sides = document.getElementById("sidesRange").value;
-  let depth = document.getElementById("depthRange").value;
-  outwards = document.getElementById("orientationCheck").checked ? -1 : 1;
+  let depth = depthRange.value;
+  outwards = invertedCheck.checked ? -1 : 1;
   let strategy = document.getElementById("strategySelect").value;
-  ratio = document.getElementById("ratioRange").value;
+  ratio = ratioRange.value;
   drawPoly(sides, depth, 2, strategy);
   hideElement(loading);
 }
@@ -191,10 +198,6 @@ function getMiddle(a, b, ratio = 2) {
 
 function initListeners() {
   // Listeners
-  let liveUpdateCheck = document.getElementById("liveUpdate");
-  let invertedCheck = document.getElementById("orientationCheck");
-
-  let sidesRange = document.getElementById("sidesRange");
   let sidesLabel = document.getElementById("sidesLabel");
   sidesLabel.innerText = sidesRange.value;
   sidesRange.addEventListener("input", (e) => {
@@ -204,7 +207,6 @@ function initListeners() {
     }
   });
 
-  let depthRange = document.getElementById("depthRange");
   let depthLabel = document.getElementById("depthLabel");
   depthLabel.innerText = depthRange.value;
   depthRange.addEventListener("input", (e) => {
@@ -214,7 +216,6 @@ function initListeners() {
     }
   });
 
-  let ratioRange = document.getElementById("ratioRange");
   ratioRange.addEventListener("input", (e) => {
     if (liveUpdateCheck.checked) {
       redraw();
@@ -234,6 +235,22 @@ function initListeners() {
   let clearButton = document.getElementById("clearButton");
   clearButton.addEventListener("click", (e) => {
     clearCanvas();
+  });
+
+  let shareButton = document.getElementById("shareButton");
+  shareButton.addEventListener("click", (e) => {
+    const baseUrl = window.location.href.split('?')[0];
+    const params = new URLSearchParams({
+      sides: sidesRange.value,
+      depth: depthRange.value,
+      ratio: ratioRange.value,
+      inverted: invertedCheck.checked,
+    });
+    navigator.clipboard.writeText(baseUrl + '?' + params.toString()).then(function() {
+      console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
   });
 
   document.getElementById("orientationCheck").addEventListener("click", (e) => {
@@ -304,5 +321,31 @@ function showElement(e) {
 }
 
 initListeners();
+
+{
+  liveUpdateCheck.checked = false;
+  let paramString = window.location.href.split('?')[1];
+  let queryString = new URLSearchParams(paramString);
+
+  if(queryString.has("sides")) {
+    sidesRange.value = queryString.get("sides");
+    sidesRange.dispatchEvent(new Event("input"));
+  }
+  if(queryString.has("depth")) {
+    depthRange.value = queryString.get("depth");
+    depthRange.dispatchEvent(new Event("input"));
+  }
+  if(queryString.has("ratio")) {
+    ratioRange.value = queryString.get("ratio");
+    ratioRange.dispatchEvent(new Event("input"));
+  }
+  if(queryString.has("inverted")) {
+    let invertedString = queryString.get("inverted");
+    let invertedValue = (invertedString === "true" || invertedString === "1");
+    invertedCheck.checked = invertedValue;
+    // invertedCheck.dispatchEvent(new Event("change"));
+  }
+  liveUpdateCheck.checked = true;
+}
 
 draw();
