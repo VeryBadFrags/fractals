@@ -10,6 +10,7 @@ let ratio = 2;
 
 const loading = document.getElementById("loading");
 
+const strategySelect = document.getElementById("strategySelect");
 const sidesRange = document.getElementById("sidesRange");
 const depthRange = document.getElementById("depthRange");
 const ratioRange = document.getElementById("ratioRange");
@@ -19,10 +20,10 @@ const liveUpdateCheck = document.getElementById("liveUpdate");
 
 function draw() {
   showElement(loading);
-  let sides = document.getElementById("sidesRange").value;
+  let sides = sidesRange.value;
   let depth = depthRange.value;
   outwards = invertedCheck.checked ? -1 : 1;
-  let strategy = document.getElementById("strategySelect").value;
+  let strategy = strategySelect.value;
   ratio = ratioRange.value;
   drawPoly(sides, depth, 2, strategy);
   hideElement(loading);
@@ -245,6 +246,7 @@ function initListeners() {
       depth: depthRange.value,
       ratio: ratioRange.value,
       inverted: invertedCheck.checked,
+      type: strategySelect.selectedIndex+1,
     });
     navigator.clipboard.writeText(baseUrl + '?' + params.toString()).then(function() {
       console.log('Async: Copying to clipboard was successful!');
@@ -259,7 +261,6 @@ function initListeners() {
     }
   });
 
-  let strategySelect = document.getElementById("strategySelect");
   strategySelect.addEventListener("change", (e) => {
     const ratioBox = document.getElementById("ratioBox");
     switch(e.target.value) {
@@ -344,6 +345,9 @@ initListeners();
     let invertedValue = (invertedString === "true" || invertedString === "1");
     invertedCheck.checked = invertedValue;
     // invertedCheck.dispatchEvent(new Event("change"));
+  }
+  if(queryString.has("type")) {
+    strategySelect.selectedIndex = Math.max(queryString.get("type") - 1, 0);
   }
   liveUpdateCheck.checked = true;
 }
