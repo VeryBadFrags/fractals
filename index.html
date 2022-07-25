@@ -24,7 +24,6 @@
     <div id="app">
       <canvas
         id="canvas"
-        height="512px"
         style="border: 1px solid #d3d3d3"
       ></canvas>
       <div class="row" id="loading">
@@ -51,7 +50,7 @@
                   class="form-range"
                   id="sidesRange"
                   min="3"
-                  max="10"
+                  max="8"
                   value="3"
                 />
               </div>
@@ -109,6 +108,24 @@
                   Inverted (<b>I</b>)
                 </label>
               </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="color"
+                  class="form-control"
+                  id="lineColorPicker"
+                  value="#000000"
+                />
+                <label for="lineColorPicker">Line color</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="color"
+                  class="form-control"
+                  id="bgColorPicker"
+                  value="#ffffff"
+                />
+                <label for="bgColorPicker">Background color (!)</label>
+              </div>
             </div>
           </div>
         </div>
@@ -116,14 +133,6 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">🖥️ Display</h5>
-              <div class="form-floating mb-3">
-                <input type="color" class="form-control" id="lineColorPicker" value="#000000">
-                <label for="lineColorPicker">Line color</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="color" class="form-control" id="bgColorPicker" value="#ffffff">
-                <label for="bgColorPicker">Background color (!)</label>
-              </div>
               <div class="form-check form-switch mb-2">
                 <input
                   class="form-check-input"
@@ -133,7 +142,7 @@
                   checked
                 />
                 <label class="form-check-label" for="liveUpdate"
-                  >🔄 Live update (L)</label
+                  >♻️ Live update (<b>L</b>)</label
                 >
               </div>
               <div class="d-grid gap-2">
@@ -142,21 +151,22 @@
                   class="btn btn-primary btn-lg"
                   id="drawButton"
                 >
-                  ✏️ Draw (D)
+                  ✏️ Draw (<b>D</b>)
                 </button>
-                <!-- <button
+                
+                <button
                 type="button"
-                class="btn btn-success btn-lg"
-                id="drawClearButton"
+                class="btn btn-info btn-lg"
+                id="addScriptButton"
               >
-                Clear & Draw
-              </button> -->
+              📜 Add to script (<b>S</b>)
+              </button>
                 <button
                   type="button"
-                  class="btn btn-outline-danger btn-lg"
+                  class="btn btn-outline-danger btn mt-3"
                   id="clearButton"
                 >
-                  🗑️ Clear (C)
+                  🗑️ Clear (<b>C</b>)
                 </button>
               </div>
             </div>
@@ -172,8 +182,8 @@
                   aria-label="Strategy"
                   id="strategySelect"
                 >
-                  <option value="koch">Koch</option>
-                  <option value="sierpinski" selected>Sierpiński sieve</option>
+                  <option value="koch">❄️ Koch</option>
+                  <option value="sierpinski" selected>🧽 Sierpiński sieve</option>
                 </select>
               </div>
               <div class="d-grid gap-2 mb-3">
@@ -185,32 +195,51 @@
                   🔗 Share link
                 </button>
                 <button
-                type="button"
-                class="btn btn-outline-success btn-lg"
-                id="exportButton"
-              >
-              🖼️ Export to image
-              </button>
+                  type="button"
+                  class="btn btn-outline-success btn-lg"
+                  id="exportButton"
+                >
+                  🖼️ Export to image
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <hr>
+      <div class="row p-3">
+        <div class="col-12">
+          <div class="card border-info">
+            <div class="card-body">
+              <div class="mb-3">
+                <label for="scriptArea" class="form-label">📜 Script</label>
+                <textarea type="text" class="form-control" rows="5" id="scriptArea"></textarea>
+              </div>
+              <button
+              type="button"
+              class="btn btn-primary btn-lg"
+              id="playButton"
+            >
+            ▶️ Play script
+            </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="imageContainer"></div>
     </div>
-
-    <div id="imageContainer"></div>
 
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div
-      class="toast"
-      role="alert"
-      id="liveToast"
-      aria-live="assertive"
-      aria-atomic="true"
-    >
-      <div class="toast-body">📋 Link copied to Clipboard!</div>
+      <div
+        class="toast"
+        role="alert"
+        id="liveToast"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="toast-body">📋 Link copied to Clipboard!</div>
+      </div>
     </div>
-  </div>
 
     <script type="module" src="/main.js"></script>
   </body>
