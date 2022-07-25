@@ -26,10 +26,6 @@
           <div
             class="progress-bar progress-bar-striped progress-bar-animated"
             role="progressbar"
-            aria-label="Animated striped example"
-            aria-valuenow="50"
-            aria-valuemin="0"
-            aria-valuemax="100"
             style="width: 50%"
           ></div>
         </div>
@@ -38,30 +34,38 @@
         <div class="col-12 col-lg-5 mb-3">
           <div class="card">
             <div class="card-body">
-              <label for="sidesRange" class="form-label"
-                >Sides (<b>+</b> / <b>-</b>):
-                <span id="sidesLabel">3</span></label
-              >
-              <input
-                type="range"
-                class="form-range"
-                id="sidesRange"
-                min="3"
-                max="10"
-                value="3"
-              />
-              <label for="customRange1" class="form-label"
-                >Depth (<b>[</b> / <b>]</b>):
-                <span id="depthLabel">3</span></label
-              >
-              <input
-                type="range"
-                class="form-range"
-                id="depthRange"
-                min="0"
-                max="6"
-                value="3"
-              />
+              <div>
+                <label for="sidesRange" class="form-label"
+                  >Sides (<b>+</b> / <b>-</b>):
+                  <span id="sidesLabel">3</span></label
+                >
+                <input
+                  type="range"
+                  class="form-range"
+                  id="sidesRange"
+                  min="3"
+                  max="10"
+                  value="3"
+                />
+              </div>
+              <div>
+                <label for="depthRange" class="form-label"
+                  >Depth (<b>[</b> / <b>]</b>):
+                  <span id="depthLabel">3</span></label
+                >
+                <input
+                  type="range"
+                  class="form-range"
+                  id="depthRange"
+                  min="0"
+                  max="6"
+                  value="3"
+                />
+              </div>
+              <div class="form-floating mb-3" id="ratioBox">
+                <input type="number" class="form-control" id="ratioRange" min="2" max="4" value="2" required>
+                <label for="ratioRange">Ratio</label>
+              </div>
               <div class="form-check">
                 <input
                   class="form-check-input"
@@ -126,8 +130,8 @@
                 aria-label="Strategy"
                 id="strategySelect"
               >
-                <option value="koch" selected>Koch</option>
-                <option value="sierpinski">Sierpiński sieve</option>
+                <option value="koch">Koch</option>
+                <option value="sierpinski" selected>Sierpiński sieve</option>
               </select>
             </div>
           </div>

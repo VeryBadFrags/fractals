@@ -6,19 +6,23 @@ canvas.height = document.body.scrollHeight;
 const ctx = canvas.getContext("2d");
 
 let outwards = 1;
+let ratio = 2;
+
+const loading = document.getElementById("loading");
 
 function draw() {
-  let loading = document.getElementById("loading");
-  showLoad(loading);
+  showElement(loading);
   let sides = document.getElementById("sidesRange").value;
   let depth = document.getElementById("depthRange").value;
   outwards = document.getElementById("orientationCheck").checked ? -1 : 1;
   let strategy = document.getElementById("strategySelect").value;
+  ratio = document.getElementById("ratioRange").value;
   drawPoly(sides, depth, 2, strategy);
-  hideLoad(loading);
+  hideElement(loading);
 }
 
 function redraw() {
+  showElement(loading);
   clearCanvas();
   draw();
 }
@@ -132,14 +136,13 @@ function drawSierpPoly(sides, depth, startPoint, endPoint, direction = 1) {
       console.log("here");
       drawKochLine(start, end);
     } else {
-      let middle = getMiddle(start, end);
-      let third = getThird(start, end);
-      let twoThird = getThird(end, start);
+      let third = getMiddle(start, end, ratio);
+      let twoThird = getMiddle(end, start, ratio);
       if(outwards == -1) {
         drawSierpPoly(sides, depth - 1, start, third, -direction);
-        drawSierpPoly(sides, depth - 1, third, twoThird, -direction);
         drawSierpPoly(sides, depth - 1, twoThird, end, -direction);
       } else {
+        let middle = getMiddle(start, end, ratio);
         drawSierpPoly(sides, depth - 1, start, middle);
       }
     }
@@ -182,12 +185,8 @@ function rotateAround(p, p0, ang) {
   return [p0[0] + rotated[0], p0[1] + rotated[1]];
 }
 
-function getMiddle(a, b) {
-  return [a[0] + (b[0] - a[0]) / 2, a[1] + (b[1] - a[1]) / 2];
-}
-
-function getThird(a, b) {
-  return [a[0] + (b[0] - a[0]) / 3, a[1] + (b[1] - a[1]) / 3];
+function getMiddle(a, b, ratio = 2) {
+  return [a[0] + (b[0] - a[0]) / ratio, a[1] + (b[1] - a[1]) / ratio];
 }
 
 function initListeners() {
@@ -206,8 +205,17 @@ function initListeners() {
   });
 
   let depthRange = document.getElementById("depthRange");
+  let depthLabel = document.getElementById("depthLabel");
+  depthLabel.innerText = depthRange.value;
   depthRange.addEventListener("input", (e) => {
-    document.getElementById("depthLabel").innerText = depthRange.value;
+    depthLabel.innerText = depthRange.value;
+    if (liveUpdateCheck.checked) {
+      redraw();
+    }
+  });
+
+  let ratioRange = document.getElementById("ratioRange");
+  ratioRange.addEventListener("input", (e) => {
     if (liveUpdateCheck.checked) {
       redraw();
     }
@@ -236,6 +244,15 @@ function initListeners() {
 
   let strategySelect = document.getElementById("strategySelect");
   strategySelect.addEventListener("change", (e) => {
+    const ratioBox = document.getElementById("ratioBox");
+    switch(e.target.value) {
+      case "koch":
+        hideElement(ratioBox);
+        break;
+      case "sierpinski":
+        showElement(ratioBox);
+        break;
+    }
     if (liveUpdateCheck.checked) {
       redraw();
     }
@@ -279,10 +296,10 @@ function initListeners() {
   });
 }
 
-function hideLoad(e) {
+function hideElement(e) {
   e.style.visibility = "hidden";
 }
-function showLoad(e) {
+function showElement(e) {
   e.style.visibility = "visible";
 }
 
