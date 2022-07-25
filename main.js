@@ -13,6 +13,7 @@ const loading = document.getElementById("loading");
 const strategySelect = document.getElementById("strategySelect");
 const sidesRange = document.getElementById("sidesRange");
 const depthRange = document.getElementById("depthRange");
+const ratioSlider = document.getElementById("ratioSlider");
 const ratioRange = document.getElementById("ratioRange");
 const invertedCheck = document.getElementById("orientationCheck");
 
@@ -39,42 +40,6 @@ function clearCanvas() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function drawSquare(degree = 0, size = 1) {
-  // ctx.clear();
-  let counter = size;
-  while (counter >= 1) {
-    ctx.beginPath();
-    ctx.lineWidth = counter;
-    let randomColor =
-      counter == 1
-        ? "#000000"
-        : "#" + Math.floor(Math.random() * 16777215).toString(16);
-    ctx.strokeStyle = randomColor;
-    drawKochLine(
-      [canvas.width / 3, canvas.height / 3],
-      [(2 * canvas.width) / 3, canvas.height / 3],
-      degree
-    );
-    drawKochLine(
-      [(2 * canvas.width) / 3, canvas.height / 3],
-      [(2 * canvas.width) / 3, (2 * canvas.height) / 3],
-      degree
-    );
-    drawKochLine(
-      [(2 * canvas.width) / 3, (2 * canvas.height) / 3],
-      [canvas.width / 3, (2 * canvas.height) / 3],
-      degree
-    );
-    drawKochLine(
-      [canvas.width / 3, (2 * canvas.height) / 3],
-      [canvas.width / 3, canvas.height / 3],
-      degree
-    );
-    ctx.stroke();
-    counter--;
-  }
-}
-
 function drawPoly(sides, depth = 0, thickness = 1, strategy) {
   let counter = thickness;
   while (counter >= 1) {
@@ -83,7 +48,8 @@ function drawPoly(sides, depth = 0, thickness = 1, strategy) {
     let randomColor =
       counter == 1
         ? "#000000"
-        : "#" + Math.floor(Math.random() * 16777215).toString(16);
+        // : "#" + Math.floor(Math.random() * 16777215?).toString(16);
+        : "#ddddff";
     ctx.strokeStyle = randomColor;
 
     switch (strategy) {
@@ -225,6 +191,10 @@ function initListeners() {
       redraw();
     }
   });
+  ratioSlider.addEventListener("input", (e) => {
+    ratioRange.value = ratioSlider.value;
+    ratioRange.dispatchEvent(new Event("input"));
+  });
 
   let drawButton = document.getElementById("drawButton");
   drawButton.addEventListener("click", (e) => {
@@ -343,6 +313,7 @@ initListeners();
   }
   if(queryString.has("ratio")) {
     ratioRange.value = queryString.get("ratio");
+    ratioSlider.value = queryString.get("ratio");
     ratioRange.dispatchEvent(new Event("input"));
   }
   if(queryString.has("inverted")) {
