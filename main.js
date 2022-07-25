@@ -187,6 +187,7 @@ function initListeners() {
   });
 
   ratioRange.addEventListener("input", (e) => {
+    ratioSlider.value = e.target.value;
     if (liveUpdateCheck.checked) {
       redraw();
     }
