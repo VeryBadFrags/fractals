@@ -19,6 +19,10 @@ const invertedCheck = document.getElementById("orientationCheck");
 
 const liveUpdateCheck = document.getElementById("liveUpdate");
 
+const bgColor = document.getElementById("bgColorPicker");
+const lineColor = document.getElementById("lineColorPicker");
+
+
 function draw() {
   showElement(loading);
   let sides = sidesRange.value;
@@ -38,6 +42,8 @@ function redraw() {
 
 function clearCanvas() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = bgColor.value;
+  ctx.fillRect(0,0,canvas.width, canvas.height);
 }
 
 function drawPoly(sides, depth = 0, thickness = 1, strategy) {
@@ -47,7 +53,7 @@ function drawPoly(sides, depth = 0, thickness = 1, strategy) {
     ctx.lineWidth = counter;
     let randomColor =
       counter == 1
-        ? "#000000"
+        ? lineColor.value
         : // : "#" + Math.floor(Math.random() * 16777215?).toString(16);
           "#ddddff";
     ctx.strokeStyle = randomColor;
@@ -265,6 +271,17 @@ function initListeners() {
     }
   });
 
+  lineColor.addEventListener("change", (e) => {
+    if (liveUpdateCheck.checked) {
+      redraw();
+    }
+  });
+  bgColor.addEventListener("change", (e) => {
+    if (liveUpdateCheck.checked) {
+      redraw();
+    }
+  });
+
   document.addEventListener("keydown", (e) => {
     switch (e.key.toLowerCase()) {
       case "c":
@@ -342,4 +359,4 @@ initListeners();
   liveUpdateCheck.checked = true;
 }
 
-draw();
+redraw();
