@@ -1,7 +1,7 @@
 let canvas = document.getElementById("canvas");
 
 canvas.width = document.body.scrollWidth;
-canvas.height = document.body.scrollHeight;
+canvas.height = document.body.scrollHeight / 2;
 
 const ctx = canvas.getContext("2d");
 
@@ -226,8 +226,8 @@ function initListeners() {
     draw();
   });
 
-  let shareButton = document.getElementById("shareButton");
-  shareButton.addEventListener("click", (e) => {
+  let copyLinkButton = document.getElementById("copyLinkButton");
+  copyLinkButton.addEventListener("click", (e) => {
     const baseUrl = window.location.href.split("?")[0];
     const params = generateUrlParams();
     navigator.clipboard.writeText(baseUrl + "?" + params.toString()).then(
@@ -240,11 +240,9 @@ function initListeners() {
     );
   });
 
-  document
-    .getElementById("addScriptButton")
-    .addEventListener("click", (e) => {
-      scriptArea.value += generateUrlParams() + '\n';
-    });
+  document.getElementById("addScriptButton").addEventListener("click", (e) => {
+    scriptArea.value += generateUrlParams() + "\n";
+  });
 
   document.getElementById("exportButton").addEventListener("click", (e) => {
     let image = new Image();
@@ -352,14 +350,14 @@ initListeners();
 }
 
 function playScript(script) {
-  if(!script) {
+  if (!script) {
     draw();
     return;
   }
   liveUpdateCheck.checked = false;
   let splitScript = script.split("\n");
 
-  if(splitScript.length <= 0) {
+  if (splitScript.length <= 0) {
     return;
   }
 
@@ -369,7 +367,7 @@ function playScript(script) {
     clearCanvas();
   }
 
-  for(let i = 0; i < splitScript.length; i++) {
+  for (let i = 0; i < splitScript.length; i++) {
     let queryString = new URLSearchParams(splitScript[i]);
     if (queryString.has("s")) {
       sidesRange.value = queryString.get("s");
@@ -380,7 +378,7 @@ function playScript(script) {
       depthRange.dispatchEvent(new Event("input"));
     }
     if (queryString.has("r")) {
-      let parsedRatio = queryString.get("r")
+      let parsedRatio = queryString.get("r");
       ratioRange.value = parsedRatio;
       ratioSlider.value = parsedRatio;
       ratioRange.dispatchEvent(new Event("input"));
