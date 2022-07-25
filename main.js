@@ -141,7 +141,6 @@ function drawSierpPoly(sides, depth, startPoint, endPoint, direction = 1) {
 
   for (let i = 0; i < sides; i++) {
     if (depth == 0) {
-      console.log("here");
       drawKochLine(start, end);
     } else {
       let third = getMiddle(start, end, ratio);
@@ -196,6 +195,10 @@ function rotateAround(p, p0, ang) {
 function getMiddle(a, b, ratio = 2) {
   return [a[0] + (b[0] - a[0]) / ratio, a[1] + (b[1] - a[1]) / ratio];
 }
+
+// BOOTSTRAP
+const toast = document.getElementById('liveToast');
+const liveToast = new bootstrap.Toast(toast, {});
 
 function initListeners() {
   // Listeners
@@ -253,6 +256,8 @@ function initListeners() {
     }, function(err) {
       console.error('Async: Could not copy text: ', err);
     });
+
+    liveToast.show();
   });
 
   document.getElementById("orientationCheck").addEventListener("click", (e) => {
