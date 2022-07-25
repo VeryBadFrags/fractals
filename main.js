@@ -220,7 +220,9 @@ function initListeners() {
 
   let playButton = document.getElementById("playButton");
   playButton.addEventListener("click", (e) => {
+    let updateState = liveUpdateCheck.checked;
     playScript(scriptArea.value);
+    liveUpdateCheck.checked = updateState;
     draw();
   });
 
