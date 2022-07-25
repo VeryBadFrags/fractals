@@ -231,6 +231,8 @@ function initListeners() {
       ratio: ratioRange.value,
       inverted: invertedCheck.checked,
       type: strategySelect.selectedIndex + 1,
+      lc: lineColor.value,
+      bc: bgColor.value,
     });
     navigator.clipboard.writeText(baseUrl + "?" + params.toString()).then(
       function () {
@@ -355,6 +357,12 @@ initListeners();
   }
   if (queryString.has("type")) {
     strategySelect.selectedIndex = Math.max(queryString.get("type") - 1, 0);
+  }
+  if (queryString.has("lc")) {
+    lineColor.value = queryString.get("lc");
+  }
+  if (queryString.has("bc")) {
+    bgColor.value = queryString.get("bc");
   }
   liveUpdateCheck.checked = true;
 }
