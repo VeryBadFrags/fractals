@@ -30,7 +30,7 @@ function draw() {
   outwards = invertedCheck.checked ? -1 : 1;
   let strategy = strategySelect.value;
   ratio = ratioRange.value;
-  drawPoly(sides, depth, 2, strategy);
+  drawPoly(sides, depth, 1, strategy);
   hideElement(loading);
 }
 
