@@ -286,7 +286,7 @@ function initListeners() {
 
   document.addEventListener("keydown", (e) => {
     switch (e.key.toLowerCase()) {
-      case "c":
+      case "r":
         clearButton.click();
         break;
       case "d":
