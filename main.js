@@ -352,6 +352,10 @@ initListeners();
 }
 
 function playScript(script) {
+  if(!script) {
+    draw();
+    return;
+  }
   liveUpdateCheck.checked = false;
   let splitScript = script.split("\n");
 
