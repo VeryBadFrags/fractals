@@ -48,8 +48,8 @@ function drawPoly(sides, depth = 0, thickness = 1, strategy) {
     let randomColor =
       counter == 1
         ? "#000000"
-        // : "#" + Math.floor(Math.random() * 16777215?).toString(16);
-        : "#ddddff";
+        : // : "#" + Math.floor(Math.random() * 16777215?).toString(16);
+          "#ddddff";
     ctx.strokeStyle = randomColor;
 
     switch (strategy) {
@@ -111,7 +111,7 @@ function drawSierpPoly(sides, depth, startPoint, endPoint, direction = 1) {
     } else {
       let third = getMiddle(start, end, ratio);
       let twoThird = getMiddle(end, start, ratio);
-      if(outwards == -1) {
+      if (outwards == -1) {
         drawSierpPoly(sides, depth - 1, start, third, -direction);
         drawSierpPoly(sides, depth - 1, twoThird, end, -direction);
       } else {
@@ -119,7 +119,11 @@ function drawSierpPoly(sides, depth, startPoint, endPoint, direction = 1) {
         drawSierpPoly(sides, depth - 1, start, middle);
       }
     }
-    let next = rotateAround(start, end, direction * (-(sides - 2) * Math.PI) / sides);
+    let next = rotateAround(
+      start,
+      end,
+      (direction * (-(sides - 2) * Math.PI)) / sides
+    );
     start = end;
     end = next;
   }
@@ -163,8 +167,8 @@ function getMiddle(a, b, ratio = 2) {
 }
 
 // BOOTSTRAP
-const toast = document.getElementById('liveToast');
-const liveToast = new bootstrap.Toast(toast, {});
+const toast = document.getElementById("liveToast");
+const copyLinkToast = new bootstrap.Toast(toast, {});
 
 function initListeners() {
   // Listeners
@@ -214,21 +218,30 @@ function initListeners() {
 
   let shareButton = document.getElementById("shareButton");
   shareButton.addEventListener("click", (e) => {
-    const baseUrl = window.location.href.split('?')[0];
+    const baseUrl = window.location.href.split("?")[0];
     const params = new URLSearchParams({
       sides: sidesRange.value,
       depth: depthRange.value,
       ratio: ratioRange.value,
       inverted: invertedCheck.checked,
-      type: strategySelect.selectedIndex+1,
+      type: strategySelect.selectedIndex + 1,
     });
-    navigator.clipboard.writeText(baseUrl + '?' + params.toString()).then(function() {
-      console.log('Async: Copying to clipboard was successful!');
-    }, function(err) {
-      console.error('Async: Could not copy text: ', err);
-    });
+    navigator.clipboard.writeText(baseUrl + "?" + params.toString()).then(
+      function () {
+        copyLinkToast.show();
+      },
+      function (err) {
+        console.error("Async: Could not copy text: ", err);
+      }
+    );
+  });
 
-    liveToast.show();
+  document.getElementById("exportButton").addEventListener("click", (e) => {
+    let image = new Image();
+    image.src = canvas.toDataURL();
+    let imageContainer = document.getElementById("imageContainer");
+    imageContainer.innerHTML = null;
+    imageContainer.appendChild(image);
   });
 
   document.getElementById("orientationCheck").addEventListener("click", (e) => {
@@ -239,7 +252,7 @@ function initListeners() {
 
   strategySelect.addEventListener("change", (e) => {
     const ratioBox = document.getElementById("ratioBox");
-    switch(e.target.value) {
+    switch (e.target.value) {
       case "koch":
         hideElement(ratioBox);
         break;
@@ -301,29 +314,29 @@ initListeners();
 
 {
   liveUpdateCheck.checked = false;
-  let paramString = window.location.href.split('?')[1];
+  let paramString = window.location.href.split("?")[1];
   let queryString = new URLSearchParams(paramString);
 
-  if(queryString.has("sides")) {
+  if (queryString.has("sides")) {
     sidesRange.value = queryString.get("sides");
     sidesRange.dispatchEvent(new Event("input"));
   }
-  if(queryString.has("depth")) {
+  if (queryString.has("depth")) {
     depthRange.value = queryString.get("depth");
     depthRange.dispatchEvent(new Event("input"));
   }
-  if(queryString.has("ratio")) {
+  if (queryString.has("ratio")) {
     ratioRange.value = queryString.get("ratio");
     ratioSlider.value = queryString.get("ratio");
     ratioRange.dispatchEvent(new Event("input"));
   }
-  if(queryString.has("inverted")) {
+  if (queryString.has("inverted")) {
     let invertedString = queryString.get("inverted");
-    let invertedValue = (invertedString === "true" || invertedString === "1");
+    let invertedValue = invertedString === "true" || invertedString === "1";
     invertedCheck.checked = invertedValue;
     // invertedCheck.dispatchEvent(new Event("change"));
   }
-  if(queryString.has("type")) {
+  if (queryString.has("type")) {
     strategySelect.selectedIndex = Math.max(queryString.get("type") - 1, 0);
   }
   liveUpdateCheck.checked = true;
