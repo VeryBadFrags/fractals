@@ -56,9 +56,6 @@ function drawSierpPoly(
   direction,
   pointsAcc
 ) {
-  if (depth < 0) {
-    return;
-  }
   let start = startPoint;
   let end = endPoint;
 
@@ -159,13 +156,18 @@ function getMiddle(a, b, ratio) {
 }
 
 function rotate(p, ang) {
+  const cos = Math.cos(ang);
+  const sin = Math.sin(ang);
+  const x = p[0];
+  const y = p[1];
   return [
-    p[0] * Math.cos(ang) - p[1] * Math.sin(ang),
-    p[0] * Math.sin(ang) + p[1] * Math.cos(ang),
+    x * cos - y * sin,
+    x * sin + y * cos,
   ];
 }
 
-function rotateAround(p, p0, ang) {
-  let rotated = rotate([p[0] - p0[0], p[1] - p0[1]], ang);
-  return [p0[0] + rotated[0], p0[1] + rotated[1]];
+function rotateAround(origin, point, ang) {
+  const pointX = point[0];
+  let rotated = rotate([origin[0] - pointX, origin[1] - point[1]], ang);
+  return [pointX + rotated[0], point[1] + rotated[1]];
 }

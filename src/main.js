@@ -20,16 +20,23 @@ const lineColor = document.getElementById("lineColorPicker");
 
 const scriptArea = document.getElementById("scriptArea");
 
-
+let pointsTimer;
 
 let worker = new Worker("drawer.js");
 
 worker.addEventListener(
   "message",
   function (e) {
+    let end = new Date().getTime();
+    console.log(`Points: ${end - pointsTimer}`);
+
+
     progressBar.classList.add("bg-success");
     progressBar.innerText="Drawing...";
+    var start = new Date().getTime();
     drawFromPoints(e.data.points);
+    end = new Date().getTime();
+    console.log(`Draw: ${end - start}`);
     hideElement(loading);
     progressBar.classList.remove("bg-success");
   },
@@ -42,7 +49,8 @@ function draw() {
   // worker.terminate();
 
   let outwards = invertedCheck.checked ? -1 : 1;
-  // drawPoly(sidesRange.value, depthRange.value, 1, strategySelect.value, ratioRange.value, outwards);
+  
+  pointsTimer = new Date().getTime();
   worker.postMessage({
     cmd: "draw",
     sides: sidesRange.value,
