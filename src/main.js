@@ -22,7 +22,7 @@ const scriptArea = document.getElementById("scriptArea");
 
 let pointsTimer;
 
-let worker = new Worker("drawer.js");
+const worker = new Worker(new URL("./worker.js", import.meta.url));
 
 worker.addEventListener(
   "message",
@@ -30,9 +30,13 @@ worker.addEventListener(
     let end = new Date().getTime();
     console.log(`Points: ${end - pointsTimer}`);
 
-
     progressBar.classList.add("bg-success");
-    progressBar.innerText="Drawing...";
+    progressBar.innerText = "Drawing...";
+
+    if(liveUpdateCheck.checked) {
+      clearCanvas();
+    }
+
     var start = new Date().getTime();
     drawFromPoints(e.data.points);
     end = new Date().getTime();
@@ -43,13 +47,17 @@ worker.addEventListener(
   false
 );
 
-function draw() {
-  progressBar.innerText="Generating points...";
-  showElement(loading);
+function draw(wipe = true) {
+  let depth = depthRange.value;
+
+  if (depth > 6) {
+    progressBar.innerText = "Generating points...";
+    showElement(loading);
+  }
   // worker.terminate();
 
   let outwards = invertedCheck.checked ? -1 : 1;
-  
+
   pointsTimer = new Date().getTime();
   worker.postMessage({
     cmd: "draw",
@@ -77,7 +85,7 @@ function drawFromPoints(points) {
 
   for (let i = 0; i < points.length; i++) {
     let line = points[i];
-    if(!line) {
+    if (!line) {
       return;
     }
     ctx.moveTo(line.start[0], line.start[1]);
@@ -88,8 +96,7 @@ function drawFromPoints(points) {
 }
 
 function redraw() {
-  clearCanvas();
-  draw();
+  draw(true);
 }
 
 function clearCanvas() {
