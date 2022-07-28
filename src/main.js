@@ -1,11 +1,10 @@
-import {drawPoly} from './drawer';
-
 const canvas = document.getElementById("canvas");
 canvas.width = document.body.scrollWidth;
 canvas.height = document.body.scrollHeight / 2;
 const ctx = canvas.getContext("2d");
 
 const loading = document.getElementById("loading");
+const progressBar = document.getElementById("progress-bar");
 
 const strategySelect = document.getElementById("strategySelect");
 const sidesRange = document.getElementById("sidesRange");
@@ -21,15 +20,66 @@ const lineColor = document.getElementById("lineColorPicker");
 
 const scriptArea = document.getElementById("scriptArea");
 
+
+
+let worker = new Worker("drawer.js");
+
+worker.addEventListener(
+  "message",
+  function (e) {
+    progressBar.classList.add("bg-success");
+    progressBar.innerText="Drawing...";
+    drawFromPoints(e.data.points);
+    hideElement(loading);
+    progressBar.classList.remove("bg-success");
+  },
+  false
+);
+
 function draw() {
+  progressBar.innerText="Generating points...";
   showElement(loading);
+  // worker.terminate();
+
   let outwards = invertedCheck.checked ? -1 : 1;
-  drawPoly(sidesRange.value, depthRange.value, 1, strategySelect.value, ratioRange.value, outwards);
-  hideElement(loading);
+  // drawPoly(sidesRange.value, depthRange.value, 1, strategySelect.value, ratioRange.value, outwards);
+  worker.postMessage({
+    cmd: "draw",
+    sides: sidesRange.value,
+    depth: depthRange.value,
+    height: canvas.height,
+    width: canvas.width,
+    strategy: strategySelect.value,
+    ratio: ratioRange.value,
+    outwards: outwards,
+  });
+}
+
+function drawFromPoints(points) {
+  const lineColor = document.getElementById("lineColorPicker");
+
+  ctx.beginPath();
+  ctx.lineWidth = 1;
+  let randomColor =
+    1 == 1
+      ? lineColor.value
+      : // : "#" + Math.floor(Math.random() * 16777215?).toString(16);
+        "#ddddff";
+  ctx.strokeStyle = randomColor;
+
+  for (let i = 0; i < points.length; i++) {
+    let line = points[i];
+    if(!line) {
+      return;
+    }
+    ctx.moveTo(line.start[0], line.start[1]);
+    ctx.lineTo(line.end[0], line.end[1]);
+  }
+
+  ctx.stroke();
 }
 
 function redraw() {
-  showElement(loading);
   clearCanvas();
   draw();
 }
