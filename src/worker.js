@@ -15,7 +15,7 @@ self.addEventListener(
         );
         break;
       case "stop":
-        console.log("stopping worker");
+        console.log("Stopping worker");
         self.close();
         break;
     }
