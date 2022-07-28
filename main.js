@@ -301,6 +301,9 @@ function initListeners() {
       case "s":
         document.getElementById("addScriptButton").click();
         break;
+      case "p":
+        document.getElementById("playButton").click();
+        break;
       case "+":
       case "=":
         sidesRange.value++;
