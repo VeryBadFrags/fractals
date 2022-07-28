@@ -298,6 +298,9 @@ function initListeners() {
       case "l":
         liveUpdateCheck.click();
         break;
+      case "s":
+        document.getElementById("addScriptButton").click();
+        break;
       case "+":
       case "=":
         sidesRange.value++;
@@ -337,6 +340,7 @@ function generateUrlParams() {
 function hideElement(e) {
   e.style.visibility = "hidden";
 }
+
 function showElement(e) {
   e.style.visibility = "visible";
 }
