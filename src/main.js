@@ -48,24 +48,21 @@ worker.addEventListener(
 function draw(wipe = true) {
   let depth = depthRange.value;
 
-  if (depth > 6) {
+  if (depth >= 5) {
     progressBar.innerText = "Generating points...";
     showElement(loading);
   }
-  // worker.terminate();
-
-  let outwards = invertedCheck.checked ? -1 : 1;
 
   pointsTimer = new Date().getTime();
   worker.postMessage({
     cmd: "draw",
     sides: sidesRange.value,
-    depth: depthRange.value,
+    depth: depth,
     height: canvas.height,
     width: canvas.width,
     strategy: strategySelect.value,
     ratio: ratioRange.value,
-    outwards: outwards,
+    outwards: invertedCheck.checked ? -1 : 1,
   });
 }
 
