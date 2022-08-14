@@ -20,15 +20,11 @@ const lineColor = document.getElementById("lineColorPicker");
 
 const scriptArea = document.getElementById("scriptArea");
 
-let pointsTimer;
-
 const worker = new Worker(new URL("./worker.js", import.meta.url));
 
 worker.addEventListener(
   "message",
   function (e) {
-    let end = new Date().getTime();
-
     progressBar.classList.add("bg-success");
     progressBar.innerText = "Drawing...";
 
@@ -36,9 +32,7 @@ worker.addEventListener(
       clearCanvas();
     }
 
-    var start = new Date().getTime();
     drawFromPoints(e.data.points);
-    end = new Date().getTime();
     hideElement(loading);
     progressBar.classList.remove("bg-success");
   },
@@ -53,7 +47,6 @@ function draw(wipe = true) {
     showElement(loading);
   }
 
-  pointsTimer = new Date().getTime();
   worker.postMessage({
     cmd: "draw",
     sides: sidesRange.value,
@@ -67,10 +60,9 @@ function draw(wipe = true) {
 }
 
 function drawFromPoints(points) {
-  const lineColor = document.getElementById("lineColorPicker");
-
   ctx.beginPath();
   ctx.lineWidth = 1;
+  // TODO add setting for random color
   let randomColor =
     1 == 1
       ? lineColor.value
@@ -78,8 +70,7 @@ function drawFromPoints(points) {
         "#ddddff";
   ctx.strokeStyle = randomColor;
 
-  for (let i = 0; i < points.length; i++) {
-    let line = points[i];
+  for (const line of points) {
     if (!line) {
       return;
     }
@@ -108,7 +99,7 @@ function initListeners() {
   // Listeners
   let sidesLabel = document.getElementById("sidesLabel");
   sidesLabel.innerText = sidesRange.value;
-  sidesRange.addEventListener("input", (e) => {
+  sidesRange.addEventListener("input", () => {
     sidesLabel.innerText = sidesRange.value;
     if (liveUpdateCheck.checked) {
       redraw();
@@ -117,7 +108,7 @@ function initListeners() {
 
   let depthLabel = document.getElementById("depthLabel");
   depthLabel.innerText = depthRange.value;
-  depthRange.addEventListener("input", (e) => {
+  depthRange.addEventListener("input", () => {
     depthLabel.innerText = depthRange.value;
     if (liveUpdateCheck.checked) {
       redraw();
@@ -130,23 +121,23 @@ function initListeners() {
       redraw();
     }
   });
-  ratioSlider.addEventListener("input", (e) => {
+  ratioSlider.addEventListener("input", () => {
     ratioRange.value = ratioSlider.value;
     ratioRange.dispatchEvent(new Event("input"));
   });
 
   let drawButton = document.getElementById("drawButton");
-  drawButton.addEventListener("click", (e) => {
+  drawButton.addEventListener("click", () => {
     draw();
   });
 
   let clearButton = document.getElementById("clearButton");
-  clearButton.addEventListener("click", (e) => {
+  clearButton.addEventListener("click", () => {
     clearCanvas();
   });
 
   let playButton = document.getElementById("playButton");
-  playButton.addEventListener("click", (e) => {
+  playButton.addEventListener("click", () => {
     let updateState = liveUpdateCheck.checked;
     playScript(scriptArea.value);
     liveUpdateCheck.checked = updateState;
@@ -154,7 +145,7 @@ function initListeners() {
   });
 
   let copyLinkButton = document.getElementById("copyLinkButton");
-  copyLinkButton.addEventListener("click", (e) => {
+  copyLinkButton.addEventListener("click", () => {
     const baseUrl = window.location.href.split("?")[0];
     const params = generateUrlParams();
     navigator.clipboard.writeText(baseUrl + "?" + params.toString()).then(
@@ -167,11 +158,11 @@ function initListeners() {
     );
   });
 
-  document.getElementById("addScriptButton").addEventListener("click", (e) => {
+  document.getElementById("addScriptButton").addEventListener("click", () => {
     scriptArea.value += generateUrlParams() + "\n";
   });
 
-  document.getElementById("exportButton").addEventListener("click", (e) => {
+  document.getElementById("exportButton").addEventListener("click", () => {
     let image = new Image();
     image.src = canvas.toDataURL();
     let imageContainer = document.getElementById("imageContainer");
@@ -179,7 +170,7 @@ function initListeners() {
     imageContainer.appendChild(image);
   });
 
-  document.getElementById("orientationCheck").addEventListener("click", (e) => {
+  document.getElementById("orientationCheck").addEventListener("click", () => {
     if (liveUpdateCheck.checked) {
       redraw();
     }
@@ -200,12 +191,12 @@ function initListeners() {
     }
   });
 
-  lineColor.addEventListener("change", (e) => {
+  lineColor.addEventListener("change", () => {
     if (liveUpdateCheck.checked) {
       redraw();
     }
   });
-  bgColor.addEventListener("change", (e) => {
+  bgColor.addEventListener("change", () => {
     if (liveUpdateCheck.checked) {
       redraw();
     }
@@ -301,8 +292,8 @@ function playScript(script) {
     clearCanvas();
   }
 
-  for (let i = 0; i < splitScript.length; i++) {
-    let queryString = new URLSearchParams(splitScript[i]);
+  for (const urlParam of splitScript) {
+    queryString = new URLSearchParams(urlParam);
     if (queryString.has("s")) {
       sidesRange.value = queryString.get("s");
       sidesRange.dispatchEvent(new Event("input"));
@@ -321,7 +312,6 @@ function playScript(script) {
       let invertedString = queryString.get("i");
       let invertedValue = invertedString === "true" || invertedString === "1";
       invertedCheck.checked = invertedValue;
-      // invertedCheck.dispatchEvent(new Event("change"));
     }
     if (queryString.has("t")) {
       strategySelect.selectedIndex = Math.max(queryString.get("t") - 1, 0);

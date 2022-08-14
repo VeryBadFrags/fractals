@@ -9,6 +9,7 @@
     "clean": "rm -rf dist"
   },
   "devDependencies": {
+    "eslint": "^8.22.0",
     "vite": "^3.0.0"
   },
   "dependencies": {

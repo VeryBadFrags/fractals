@@ -23,7 +23,7 @@ self.addEventListener(
   false
 );
 
-function drawPoly(sides, depth, height, width, strategy, ratio = 2, outwards) {
+function drawPoly(sides, depth, height, width, strategy, ratio, outwards) {
   let pointsAcc = [];
   switch (strategy) {
     case "koch":
