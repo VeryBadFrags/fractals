@@ -1,8 +1,5 @@
 import { Line } from "./worker";
 import { Toast } from "bootstrap";
-import { URLSearchParams } from "url";
-
-export {};
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 canvas.width = document.body.scrollWidth;
@@ -53,7 +50,7 @@ worker.addEventListener(
   false
 );
 
-function draw(wipe = true) {
+function draw() {
   let depth = parseInt(depthRange.value);
 
   if (depth >= 5) {
@@ -96,7 +93,7 @@ function drawFromPoints(points: Array<Line>) {
 }
 
 function redraw() {
-  draw(true);
+  draw();
 }
 
 function clearCanvas() {

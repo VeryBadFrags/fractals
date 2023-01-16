@@ -3,7 +3,7 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ESNext", "DOM", "webworker"],
+    "lib": ["ESNext", "DOM", "dom.iterable", "webworker"],
     "moduleResolution": "Node",
     "strict": true,
     "resolveJsonModule": true,
