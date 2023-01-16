@@ -126,6 +126,14 @@ function initListeners() {
     }
   });
 
+  liveUpdateCheck.addEventListener("input", () => {
+    if (liveUpdateCheck.checked) {
+      hideElement(drawButton);
+    } else {
+      showElement(drawButton);
+    }
+  });
+
   ratioRange.addEventListener("input", (e) => {
     ratioSlider.value = (e.target as HTMLInputElement).value;
     if (liveUpdateCheck.checked) {
