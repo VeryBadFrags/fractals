@@ -1,5 +1,7 @@
 # Fractals
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a2486ad2-2e72-4209-94bc-57ab2d0e5068/deploy-status)](https://app.netlify.com/sites/cerulean-hotteok-274274/deploys)
+
 Sample script
 
 ```text
