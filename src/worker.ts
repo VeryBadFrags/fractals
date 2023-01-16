@@ -52,10 +52,10 @@ function drawPoly(
       let scaleFactor = (2 * sides) / 3;
       let length = Math.min(height / scaleFactor, width / scaleFactor);
 
-      let start: Point = {x: width / 2, y: 32};
+      let start: Point = { x: width / 2, y: 32 };
       let end = rotateAround(
         start,
-        {x: start.x + length, y: start.y},
+        { x: start.x + length, y: start.y },
         (-(sides - 2) * Math.PI) / sides
       );
       drawSierpPoly(sides, depth, start, end, ratio, outwards, 1, pointsAcc);
@@ -140,8 +140,8 @@ function drawKochPoly(
   // Init
   let scaleFactor = (2 * sides) / 3;
   let length = Math.min(height / scaleFactor, width / scaleFactor);
-  let start: Point = {x: width / 2, y: 32};
-  let end = {x: start.x + length, y: start.y};
+  let start: Point = { x: width / 2, y: 32 };
+  let end = { x: start.x + length, y: start.y };
   end = rotateAround(start, end, (-(sides - 2) * Math.PI) / sides);
 
   for (let i = 0; i < sides; i++) {
@@ -152,7 +152,13 @@ function drawKochPoly(
   }
 }
 
-function drawKochLine(start: Point, end: Point, outwards: number, pointsAcc: Array<Line>, depth = 0) {
+function drawKochLine(
+  start: Point,
+  end: Point,
+  outwards: number,
+  pointsAcc: Array<Line>,
+  depth = 0
+) {
   if (depth <= 0) {
     drawLine(start, end, pointsAcc);
   } else {
@@ -177,7 +183,7 @@ function drawLine(start: Point, end: Point, pointsAcc: Array<Line>) {
 }
 
 function getMiddle(a: Point, b: Point, ratio: number): Point {
-  return {x: a.x + (b.x - a.x) / ratio, y: a.y + (b.y - a.y) / ratio};
+  return { x: a.x + (b.x - a.x) / ratio, y: a.y + (b.y - a.y) / ratio };
 }
 
 function rotate(p: Point, ang: number): Point {
@@ -185,11 +191,11 @@ function rotate(p: Point, ang: number): Point {
   const sin = Math.sin(ang);
   const x = p.x;
   const y = p.y;
-  return {x: x * cos - y * sin, y: x * sin + y * cos};
+  return { x: x * cos - y * sin, y: x * sin + y * cos };
 }
 
 function rotateAround(origin: Point, point: Point, ang: number): Point {
   const pointX = point.x;
-  let rotated = rotate({x: origin.x - pointX, y: origin.y - point.y}, ang);
-  return {x: pointX + rotated.x, y: point.y + rotated.y};
+  let rotated = rotate({ x: origin.x - pointX, y: origin.y - point.y }, ang);
+  return { x: pointX + rotated.x, y: point.y + rotated.y };
 }

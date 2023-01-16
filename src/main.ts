@@ -268,16 +268,18 @@ function initListeners() {
 }
 
 function generateUrlParams() {
-  new URLSearchParams()
-  return new URLSearchParams({
-    s: sidesRange.value,
-    d: depthRange.value,
-    r: ratioRange.value,
-    i: invertedCheck.checked ? 1 : 0,
-    t: strategySelect.selectedIndex + 1,
-    lc: lineColor.value,
-    bg: bgColor.value,
-  }.toString());
+  new URLSearchParams();
+  return new URLSearchParams(
+    {
+      s: sidesRange.value,
+      d: depthRange.value,
+      r: ratioRange.value,
+      i: invertedCheck.checked ? 1 : 0,
+      t: strategySelect.selectedIndex + 1,
+      lc: lineColor.value,
+      bg: bgColor.value,
+    }.toString()
+  );
 }
 
 function hideElement(e: HTMLElement) {
