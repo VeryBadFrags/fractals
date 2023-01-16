@@ -1,26 +1,37 @@
-const canvas = document.getElementById("canvas");
+import { Line } from "./worker";
+import { Toast } from "bootstrap";
+
+const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 canvas.width = document.body.scrollWidth;
 canvas.height = document.body.scrollHeight / 2;
-const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d")!;
 
-const loading = document.getElementById("loading");
-const progressBar = document.getElementById("progress-bar");
+const loading = document.getElementById("loading")!;
+const progressBar = document.getElementById("progress-bar")!;
 
-const strategySelect = document.getElementById("strategySelect");
-const sidesRange = document.getElementById("sidesRange");
-const depthRange = document.getElementById("depthRange");
-const ratioSlider = document.getElementById("ratioSlider");
-const ratioRange = document.getElementById("ratioRange");
-const invertedCheck = document.getElementById("orientationCheck");
+const strategySelect = document.getElementById(
+  "strategySelect"
+) as HTMLSelectElement;
+const sidesRange = document.getElementById("sidesRange") as HTMLInputElement;
+const depthRange = document.getElementById("depthRange") as HTMLInputElement;
+const ratioSlider = document.getElementById("ratioSlider") as HTMLInputElement;
+const ratioRange = document.getElementById("ratioRange") as HTMLInputElement;
+const invertedCheck = document.getElementById(
+  "orientationCheck"
+) as HTMLInputElement;
 
-const liveUpdateCheck = document.getElementById("liveUpdate");
+const liveUpdateCheck = document.getElementById(
+  "liveUpdate"
+) as HTMLInputElement;
 
-const bgColor = document.getElementById("bgColorPicker");
-const lineColor = document.getElementById("lineColorPicker");
+const bgColor = document.getElementById("bgColorPicker") as HTMLInputElement;
+const lineColor = document.getElementById(
+  "lineColorPicker"
+) as HTMLInputElement;
 
-const scriptArea = document.getElementById("scriptArea");
+const scriptArea = document.getElementById("scriptArea") as HTMLTextAreaElement;
 
-const worker = new Worker(new URL("./worker.js", import.meta.url));
+const worker = new Worker(new URL("./worker.ts", import.meta.url));
 
 worker.addEventListener(
   "message",
@@ -28,7 +39,7 @@ worker.addEventListener(
     progressBar.classList.add("bg-success");
     progressBar.innerText = "Drawing...";
 
-    if(liveUpdateCheck.checked) {
+    if (liveUpdateCheck.checked) {
       clearCanvas();
     }
 
@@ -39,8 +50,8 @@ worker.addEventListener(
   false
 );
 
-function draw(wipe = true) {
-  let depth = depthRange.value;
+function draw() {
+  let depth = parseInt(depthRange.value);
 
   if (depth >= 5) {
     progressBar.innerText = "Generating points...";
@@ -59,7 +70,7 @@ function draw(wipe = true) {
   });
 }
 
-function drawFromPoints(points) {
+function drawFromPoints(points: Array<Line>) {
   ctx.beginPath();
   ctx.lineWidth = 1;
   // TODO add setting for random color
@@ -74,15 +85,15 @@ function drawFromPoints(points) {
     if (!line) {
       return;
     }
-    ctx.moveTo(line.start[0], line.start[1]);
-    ctx.lineTo(line.end[0], line.end[1]);
+    ctx.moveTo(line.start.x, line.start.y);
+    ctx.lineTo(line.end.x, line.end.y);
   }
 
   ctx.stroke();
 }
 
 function redraw() {
-  draw(true);
+  draw();
 }
 
 function clearCanvas() {
@@ -92,12 +103,12 @@ function clearCanvas() {
 }
 
 // BOOTSTRAP
-const toast = document.getElementById("liveToast");
-const copyLinkToast = new bootstrap.Toast(toast, {});
+const toast = document.getElementById("liveToast")!;
+const copyLinkToast = new Toast(toast, {});
 
 function initListeners() {
   // Listeners
-  let sidesLabel = document.getElementById("sidesLabel");
+  let sidesLabel = document.getElementById("sidesLabel")!;
   sidesLabel.innerText = sidesRange.value;
   sidesRange.addEventListener("input", () => {
     sidesLabel.innerText = sidesRange.value;
@@ -106,7 +117,7 @@ function initListeners() {
     }
   });
 
-  let depthLabel = document.getElementById("depthLabel");
+  let depthLabel = document.getElementById("depthLabel")!;
   depthLabel.innerText = depthRange.value;
   depthRange.addEventListener("input", () => {
     depthLabel.innerText = depthRange.value;
@@ -116,7 +127,7 @@ function initListeners() {
   });
 
   ratioRange.addEventListener("input", (e) => {
-    ratioSlider.value = e.target.value;
+    ratioSlider.value = (e.target as HTMLInputElement).value;
     if (liveUpdateCheck.checked) {
       redraw();
     }
@@ -126,17 +137,17 @@ function initListeners() {
     ratioRange.dispatchEvent(new Event("input"));
   });
 
-  let drawButton = document.getElementById("drawButton");
+  let drawButton = document.getElementById("drawButton") as HTMLButtonElement;
   drawButton.addEventListener("click", () => {
     draw();
   });
 
-  let clearButton = document.getElementById("clearButton");
+  let clearButton = document.getElementById("clearButton") as HTMLButtonElement;
   clearButton.addEventListener("click", () => {
     clearCanvas();
   });
 
-  let playButton = document.getElementById("playButton");
+  let playButton = document.getElementById("playButton") as HTMLButtonElement;
   playButton.addEventListener("click", () => {
     let updateState = liveUpdateCheck.checked;
     playScript(scriptArea.value);
@@ -144,7 +155,9 @@ function initListeners() {
     draw();
   });
 
-  let copyLinkButton = document.getElementById("copyLinkButton");
+  let copyLinkButton = document.getElementById(
+    "copyLinkButton"
+  ) as HTMLButtonElement;
   copyLinkButton.addEventListener("click", () => {
     const baseUrl = window.location.href.split("?")[0];
     const params = generateUrlParams();
@@ -158,27 +171,27 @@ function initListeners() {
     );
   });
 
-  document.getElementById("addScriptButton").addEventListener("click", () => {
+  document.getElementById("addScriptButton")!.addEventListener("click", () => {
     scriptArea.value += generateUrlParams() + "\n";
   });
 
-  document.getElementById("exportButton").addEventListener("click", () => {
+  document.getElementById("exportButton")!.addEventListener("click", () => {
     let image = new Image();
     image.src = canvas.toDataURL();
-    let imageContainer = document.getElementById("imageContainer");
-    imageContainer.innerHTML = null;
+    let imageContainer = document.getElementById("imageContainer")!;
+    imageContainer.innerHTML = "";
     imageContainer.appendChild(image);
   });
 
-  document.getElementById("orientationCheck").addEventListener("click", () => {
+  document.getElementById("orientationCheck")!.addEventListener("click", () => {
     if (liveUpdateCheck.checked) {
       redraw();
     }
   });
 
   strategySelect.addEventListener("change", (e) => {
-    const ratioBox = document.getElementById("ratioBox");
-    switch (e.target.value) {
+    const ratioBox = document.getElementById("ratioBox")!;
+    switch ((e.target as HTMLSelectElement).value) {
       case "koch":
         hideElement(ratioBox);
         break;
@@ -217,29 +230,29 @@ function initListeners() {
         liveUpdateCheck.click();
         break;
       case "s":
-        document.getElementById("addScriptButton").click();
+        document.getElementById("addScriptButton")!.click();
         break;
       case "p":
-        document.getElementById("playButton").click();
+        document.getElementById("playButton")!.click();
         break;
       case "+":
       case "=":
-        sidesRange.value++;
+        sidesRange.value = (parseInt(sidesRange.value) + 1).toString();
         sidesRange.dispatchEvent(new Event("input"));
         break;
       case "_":
       case "-":
-        sidesRange.value--;
+        sidesRange.value = (parseInt(sidesRange.value) - 1).toString();
         sidesRange.dispatchEvent(new Event("input"));
         break;
       case "[":
       case "{":
-        depthRange.value--;
+        depthRange.value = (parseInt(depthRange.value) - 1).toString();
         depthRange.dispatchEvent(new Event("input"));
         break;
       case "]":
       case "}":
-        depthRange.value++;
+        depthRange.value = (parseInt(depthRange.value) + 1).toString();
         depthRange.dispatchEvent(new Event("input"));
         break;
     }
@@ -247,6 +260,7 @@ function initListeners() {
 }
 
 function generateUrlParams() {
+  new URLSearchParams()
   return new URLSearchParams({
     s: sidesRange.value,
     d: depthRange.value,
@@ -255,14 +269,14 @@ function generateUrlParams() {
     t: strategySelect.selectedIndex + 1,
     lc: lineColor.value,
     bg: bgColor.value,
-  });
+  }.toString());
 }
 
-function hideElement(e) {
+function hideElement(e: HTMLElement) {
   e.style.visibility = "hidden";
 }
 
-function showElement(e) {
+function showElement(e: HTMLElement) {
   e.style.visibility = "visible";
 }
 
@@ -274,7 +288,7 @@ initListeners();
   liveUpdateCheck.checked = true;
 }
 
-function playScript(script) {
+function playScript(script: string) {
   if (!script) {
     draw();
     return;
@@ -288,22 +302,22 @@ function playScript(script) {
 
   let queryString = new URLSearchParams(splitScript[0]);
   if (queryString.has("bg")) {
-    bgColor.value = queryString.get("bg");
+    bgColor.value = queryString.get("bg")!;
     clearCanvas();
   }
 
   for (const urlParam of splitScript) {
     queryString = new URLSearchParams(urlParam);
     if (queryString.has("s")) {
-      sidesRange.value = queryString.get("s");
+      sidesRange.value = queryString.get("s")!;
       sidesRange.dispatchEvent(new Event("input"));
     }
     if (queryString.has("d")) {
-      depthRange.value = queryString.get("d");
+      depthRange.value = queryString.get("d")!;
       depthRange.dispatchEvent(new Event("input"));
     }
     if (queryString.has("r")) {
-      let parsedRatio = queryString.get("r");
+      let parsedRatio = queryString.get("r")!;
       ratioRange.value = parsedRatio;
       ratioSlider.value = parsedRatio;
       ratioRange.dispatchEvent(new Event("input"));
@@ -314,10 +328,13 @@ function playScript(script) {
       invertedCheck.checked = invertedValue;
     }
     if (queryString.has("t")) {
-      strategySelect.selectedIndex = Math.max(queryString.get("t") - 1, 0);
+      strategySelect.selectedIndex = Math.max(
+        parseInt(queryString.get("t")!) - 1,
+        0
+      );
     }
     if (queryString.has("lc")) {
-      lineColor.value = queryString.get("lc");
+      lineColor.value = queryString.get("lc")!;
     }
     draw();
   }

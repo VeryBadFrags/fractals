@@ -1,3 +1,13 @@
+export type Point = {
+  x: number;
+  y: number;
+};
+
+export type Line = {
+  start: Point;
+  end: Point;
+};
+
 self.addEventListener(
   "message",
   (e) => {
@@ -23,8 +33,16 @@ self.addEventListener(
   false
 );
 
-function drawPoly(sides, depth, height, width, strategy, ratio, outwards) {
-  let pointsAcc = [];
+function drawPoly(
+  sides: number,
+  depth: number,
+  height: number,
+  width: number,
+  strategy: string,
+  ratio: number,
+  outwards: number
+) {
+  let pointsAcc: Array<Line> = [];
   switch (strategy) {
     case "koch":
       drawKochPoly(sides, depth, height, width, outwards, pointsAcc);
@@ -34,10 +52,10 @@ function drawPoly(sides, depth, height, width, strategy, ratio, outwards) {
       let scaleFactor = (2 * sides) / 3;
       let length = Math.min(height / scaleFactor, width / scaleFactor);
 
-      let start = [width / 2, 32];
+      let start: Point = {x: width / 2, y: 32};
       let end = rotateAround(
         start,
-        [start[0] + length, start[1]],
+        {x: start.x + length, y: start.y},
         (-(sides - 2) * Math.PI) / sides
       );
       drawSierpPoly(sides, depth, start, end, ratio, outwards, 1, pointsAcc);
@@ -47,14 +65,14 @@ function drawPoly(sides, depth, height, width, strategy, ratio, outwards) {
 }
 
 function drawSierpPoly(
-  sides,
-  depth,
-  startPoint,
-  endPoint,
-  ratio,
-  outwards,
-  direction,
-  pointsAcc
+  sides: number,
+  depth: number,
+  startPoint: Point,
+  endPoint: Point,
+  ratio: number,
+  outwards: number,
+  direction: number,
+  pointsAcc: Array<Line>
 ) {
   let start = startPoint;
   let end = endPoint;
@@ -111,12 +129,19 @@ function drawSierpPoly(
   }
 }
 
-function drawKochPoly(sides, depth, height, width, outwards, pointsAcc) {
+function drawKochPoly(
+  sides: number,
+  depth: number,
+  height: number,
+  width: number,
+  outwards: number,
+  pointsAcc: Array<Line>
+) {
   // Init
   let scaleFactor = (2 * sides) / 3;
   let length = Math.min(height / scaleFactor, width / scaleFactor);
-  let start = [width / 2, 32];
-  let end = [start[0] + length, start[1]];
+  let start: Point = {x: width / 2, y: 32};
+  let end = {x: start.x + length, y: start.y};
   end = rotateAround(start, end, (-(sides - 2) * Math.PI) / sides);
 
   for (let i = 0; i < sides; i++) {
@@ -127,18 +152,18 @@ function drawKochPoly(sides, depth, height, width, outwards, pointsAcc) {
   }
 }
 
-function drawKochLine(start, end, outwards, pointsAcc, depth = 0) {
+function drawKochLine(start: Point, end: Point, outwards: number, pointsAcc: Array<Line>, depth = 0) {
   if (depth <= 0) {
     drawLine(start, end, pointsAcc);
   } else {
-    let third = [
-      start[0] - (start[0] - end[0]) / 3,
-      start[1] - (start[1] - end[1]) / 3,
-    ];
-    let twoThird = [
-      start[0] + (-2 * (start[0] - end[0])) / 3,
-      start[1] + (-2 * (start[1] - end[1])) / 3,
-    ];
+    let third: Point = {
+      x: start.x - (start.x - end.x) / 3,
+      y: start.y - (start.y - end.y) / 3,
+    };
+    let twoThird = {
+      x: start.x + (-2 * (start.x - end.x)) / 3,
+      y: start.y + (-2 * (start.y - end.y)) / 3,
+    };
     let midPoint = rotateAround(third, twoThird, (outwards * Math.PI) / 3);
     drawKochLine(start, third, outwards, pointsAcc, depth - 1);
     drawKochLine(third, midPoint, outwards, pointsAcc, depth - 1);
@@ -147,27 +172,24 @@ function drawKochLine(start, end, outwards, pointsAcc, depth = 0) {
   }
 }
 
-function drawLine(start, end, pointsAcc) {
+function drawLine(start: Point, end: Point, pointsAcc: Array<Line>) {
   pointsAcc.push({ start: start, end: end });
 }
 
-function getMiddle(a, b, ratio) {
-  return [a[0] + (b[0] - a[0]) / ratio, a[1] + (b[1] - a[1]) / ratio];
+function getMiddle(a: Point, b: Point, ratio: number): Point {
+  return {x: a.x + (b.x - a.x) / ratio, y: a.y + (b.y - a.y) / ratio};
 }
 
-function rotate(p, ang) {
+function rotate(p: Point, ang: number): Point {
   const cos = Math.cos(ang);
   const sin = Math.sin(ang);
-  const x = p[0];
-  const y = p[1];
-  return [
-    x * cos - y * sin,
-    x * sin + y * cos,
-  ];
+  const x = p.x;
+  const y = p.y;
+  return {x: x * cos - y * sin, y: x * sin + y * cos};
 }
 
-function rotateAround(origin, point, ang) {
-  const pointX = point[0];
-  let rotated = rotate([origin[0] - pointX, origin[1] - point[1]], ang);
-  return [pointX + rotated[0], point[1] + rotated[1]];
+function rotateAround(origin: Point, point: Point, ang: number): Point {
+  const pointX = point.x;
+  let rotated = rotate({x: origin.x - pointX, y: origin.y - point.y}, ang);
+  return {x: pointX + rotated.x, y: point.y + rotated.y};
 }
