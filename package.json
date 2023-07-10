@@ -7,7 +7,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist/"
   },
   "devDependencies": {
     "netlify-cli": "^15.6.0",
@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@types/bootstrap": "^5.2.6",
-    "bootstrap": "^5.2.3"
+    "bootstrap": "^5.2.3",
+    "plausible-tracker": "^0.3.8"
   }
 }

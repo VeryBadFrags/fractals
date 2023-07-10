@@ -1,6 +1,14 @@
 import { Line } from "./worker";
 import { Toast } from "bootstrap";
 
+import Plausible from "plausible-tracker";
+const plausible = Plausible({
+  domain: "fractals.verybadfrags.com",
+  apiHost: "/ps",
+  hashMode: false,
+});
+plausible.trackPageview();
+
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 canvas.width = document.body.scrollWidth;
 canvas.height = document.body.scrollHeight / 2;
