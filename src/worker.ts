@@ -21,7 +21,7 @@ self.addEventListener(
           data.width,
           data.strategy,
           data.ratio,
-          data.outwards
+          data.outwards,
         );
         break;
       case "stop":
@@ -30,7 +30,7 @@ self.addEventListener(
         break;
     }
   },
-  false
+  false,
 );
 
 function drawPoly(
@@ -40,7 +40,7 @@ function drawPoly(
   width: number,
   strategy: string,
   ratio: number,
-  outwards: number
+  outwards: number,
 ) {
   let pointsAcc: Array<Line> = [];
   switch (strategy) {
@@ -56,7 +56,7 @@ function drawPoly(
       let end = rotateAround(
         start,
         { x: start.x + length, y: start.y },
-        (-(sides - 2) * Math.PI) / sides
+        (-(sides - 2) * Math.PI) / sides,
       );
       drawSierpPoly(sides, depth, start, end, ratio, outwards, 1, pointsAcc);
       break;
@@ -72,7 +72,7 @@ function drawSierpPoly(
   ratio: number,
   outwards: number,
   direction: number,
-  pointsAcc: Array<Line>
+  pointsAcc: Array<Line>,
 ) {
   let start = startPoint;
   let end = endPoint;
@@ -92,7 +92,7 @@ function drawSierpPoly(
           ratio,
           outwards,
           -direction,
-          pointsAcc
+          pointsAcc,
         );
         drawSierpPoly(
           sides,
@@ -102,7 +102,7 @@ function drawSierpPoly(
           ratio,
           outwards,
           -direction,
-          pointsAcc
+          pointsAcc,
         );
       } else {
         let middle = getMiddle(start, end, ratio);
@@ -114,7 +114,7 @@ function drawSierpPoly(
           ratio,
           outwards,
           1,
-          pointsAcc
+          pointsAcc,
         );
       }
     }
@@ -122,7 +122,7 @@ function drawSierpPoly(
     let next = rotateAround(
       start,
       end,
-      (direction * (-(sides - 2) * Math.PI)) / sides
+      (direction * (-(sides - 2) * Math.PI)) / sides,
     );
     start = end;
     end = next;
@@ -135,7 +135,7 @@ function drawKochPoly(
   height: number,
   width: number,
   outwards: number,
-  pointsAcc: Array<Line>
+  pointsAcc: Array<Line>,
 ) {
   // Init
   let scaleFactor = (2 * sides) / 3;
@@ -157,7 +157,7 @@ function drawKochLine(
   end: Point,
   outwards: number,
   pointsAcc: Array<Line>,
-  depth = 0
+  depth = 0,
 ) {
   if (depth <= 0) {
     drawLine(start, end, pointsAcc);

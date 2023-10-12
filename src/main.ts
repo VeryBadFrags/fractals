@@ -18,23 +18,23 @@ const loading = document.getElementById("loading")!;
 const progressBar = document.getElementById("progress-bar")!;
 
 const strategySelect = document.getElementById(
-  "strategySelect"
+  "strategySelect",
 ) as HTMLSelectElement;
 const sidesRange = document.getElementById("sidesRange") as HTMLInputElement;
 const depthRange = document.getElementById("depthRange") as HTMLInputElement;
 const ratioSlider = document.getElementById("ratioSlider") as HTMLInputElement;
 const ratioRange = document.getElementById("ratioRange") as HTMLInputElement;
 const invertedCheck = document.getElementById(
-  "orientationCheck"
+  "orientationCheck",
 ) as HTMLInputElement;
 
 const liveUpdateCheck = document.getElementById(
-  "liveUpdate"
+  "liveUpdate",
 ) as HTMLInputElement;
 
 const bgColor = document.getElementById("bgColorPicker") as HTMLInputElement;
 const lineColor = document.getElementById(
-  "lineColorPicker"
+  "lineColorPicker",
 ) as HTMLInputElement;
 
 const scriptArea = document.getElementById("scriptArea") as HTMLTextAreaElement;
@@ -55,7 +55,7 @@ worker.addEventListener(
     hideElement(loading);
     progressBar.classList.remove("bg-success");
   },
-  false
+  false,
 );
 
 function draw() {
@@ -172,7 +172,7 @@ function initListeners() {
   });
 
   let copyLinkButton = document.getElementById(
-    "copyLinkButton"
+    "copyLinkButton",
   ) as HTMLButtonElement;
   copyLinkButton.addEventListener("click", () => {
     const baseUrl = window.location.href.split("?")[0];
@@ -183,7 +183,7 @@ function initListeners() {
       },
       function (err) {
         console.error("Async: Could not copy text: ", err);
-      }
+      },
     );
   });
 
@@ -286,7 +286,7 @@ function generateUrlParams() {
       t: strategySelect.selectedIndex + 1,
       lc: lineColor.value,
       bg: bgColor.value,
-    }.toString()
+    }.toString(),
   );
 }
 
@@ -348,7 +348,7 @@ function playScript(script: string) {
     if (queryString.has("t")) {
       strategySelect.selectedIndex = Math.max(
         parseInt(queryString.get("t")!) - 1,
-        0
+        0,
       );
     }
     if (queryString.has("lc")) {
