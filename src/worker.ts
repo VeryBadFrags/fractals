@@ -11,7 +11,7 @@ export type Line = {
 self.addEventListener(
   "message",
   (e) => {
-    let data = e.data;
+    const data = e.data;
     switch (data.cmd) {
       case "draw":
         drawPoly(
@@ -42,23 +42,25 @@ function drawPoly(
   ratio: number,
   outwards: number,
 ) {
-  let pointsAcc: Array<Line> = [];
+  const pointsAcc: Array<Line> = [];
   switch (strategy) {
     case "koch":
       drawKochPoly(sides, depth, height, width, outwards, pointsAcc);
       break;
     case "sierpinski":
-      // Init
-      let scaleFactor = (2 * sides) / 3;
-      let length = Math.min(height / scaleFactor, width / scaleFactor);
+      {
+        // Init
+        const scaleFactor = (2 * sides) / 3;
+        const length = Math.min(height / scaleFactor, width / scaleFactor);
 
-      let start: Point = { x: width / 2, y: 32 };
-      let end = rotateAround(
-        start,
-        { x: start.x + length, y: start.y },
-        (-(sides - 2) * Math.PI) / sides,
-      );
-      drawSierpPoly(sides, depth, start, end, ratio, outwards, 1, pointsAcc);
+        const start: Point = { x: width / 2, y: 32 };
+        const end = rotateAround(
+          start,
+          { x: start.x + length, y: start.y },
+          (-(sides - 2) * Math.PI) / sides,
+        );
+        drawSierpPoly(sides, depth, start, end, ratio, outwards, 1, pointsAcc);
+      }
       break;
   }
   self.postMessage({ points: pointsAcc });
@@ -81,8 +83,8 @@ function drawSierpPoly(
     if (depth == 0) {
       drawLine(start, end, pointsAcc);
     } else {
-      let third = getMiddle(start, end, ratio);
-      let twoThird = getMiddle(end, start, ratio);
+      const third = getMiddle(start, end, ratio);
+      const twoThird = getMiddle(end, start, ratio);
       if (outwards == -1) {
         drawSierpPoly(
           sides,
@@ -105,7 +107,7 @@ function drawSierpPoly(
           pointsAcc,
         );
       } else {
-        let middle = getMiddle(start, end, ratio);
+        const middle = getMiddle(start, end, ratio);
         drawSierpPoly(
           sides,
           depth - 1,
@@ -119,7 +121,7 @@ function drawSierpPoly(
       }
     }
 
-    let next = rotateAround(
+    const next = rotateAround(
       start,
       end,
       (direction * (-(sides - 2) * Math.PI)) / sides,
@@ -138,15 +140,15 @@ function drawKochPoly(
   pointsAcc: Array<Line>,
 ) {
   // Init
-  let scaleFactor = (2 * sides) / 3;
-  let length = Math.min(height / scaleFactor, width / scaleFactor);
+  const scaleFactor = (2 * sides) / 3;
+  const length = Math.min(height / scaleFactor, width / scaleFactor);
   let start: Point = { x: width / 2, y: 32 };
   let end = { x: start.x + length, y: start.y };
   end = rotateAround(start, end, (-(sides - 2) * Math.PI) / sides);
 
   for (let i = 0; i < sides; i++) {
     drawKochLine(start, end, outwards, pointsAcc, depth);
-    let next = rotateAround(start, end, (-(sides - 2) * Math.PI) / sides);
+    const next = rotateAround(start, end, (-(sides - 2) * Math.PI) / sides);
     start = end;
     end = next;
   }
@@ -162,15 +164,15 @@ function drawKochLine(
   if (depth <= 0) {
     drawLine(start, end, pointsAcc);
   } else {
-    let third: Point = {
+    const third: Point = {
       x: start.x - (start.x - end.x) / 3,
       y: start.y - (start.y - end.y) / 3,
     };
-    let twoThird = {
+    const twoThird = {
       x: start.x + (-2 * (start.x - end.x)) / 3,
       y: start.y + (-2 * (start.y - end.y)) / 3,
     };
-    let midPoint = rotateAround(third, twoThird, (outwards * Math.PI) / 3);
+    const midPoint = rotateAround(third, twoThird, (outwards * Math.PI) / 3);
     drawKochLine(start, third, outwards, pointsAcc, depth - 1);
     drawKochLine(third, midPoint, outwards, pointsAcc, depth - 1);
     drawKochLine(midPoint, twoThird, outwards, pointsAcc, depth - 1);
@@ -196,6 +198,6 @@ function rotate(p: Point, ang: number): Point {
 
 function rotateAround(origin: Point, point: Point, ang: number): Point {
   const pointX = point.x;
-  let rotated = rotate({ x: origin.x - pointX, y: origin.y - point.y }, ang);
+  const rotated = rotate({ x: origin.x - pointX, y: origin.y - point.y }, ang);
   return { x: pointX + rotated.x, y: point.y + rotated.y };
 }

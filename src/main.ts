@@ -59,7 +59,7 @@ worker.addEventListener(
 );
 
 function draw() {
-  let depth = parseInt(depthRange.value);
+  const depth = parseInt(depthRange.value);
 
   if (depth >= 5) {
     progressBar.innerText = "Generating points...";
@@ -82,11 +82,9 @@ function drawFromPoints(points: Array<Line>) {
   ctx.beginPath();
   ctx.lineWidth = 1;
   // TODO add setting for random color
-  let randomColor =
-    1 == 1
-      ? lineColor.value
-      : // : "#" + Math.floor(Math.random() * 16777215?).toString(16);
-        "#ddddff";
+  const randomColor = lineColor.value;
+  // "#" + Math.floor(Math.random() * 16777215?).toString(16);
+  // "#ddddff";
   ctx.strokeStyle = randomColor;
 
   for (const line of points) {
@@ -116,7 +114,7 @@ const copyLinkToast = new Toast(toast, {});
 
 function initListeners() {
   // Listeners
-  let sidesLabel = document.getElementById("sidesLabel")!;
+  const sidesLabel = document.getElementById("sidesLabel")!;
   sidesLabel.innerText = sidesRange.value;
   sidesRange.addEventListener("input", () => {
     sidesLabel.innerText = sidesRange.value;
@@ -125,7 +123,7 @@ function initListeners() {
     }
   });
 
-  let depthLabel = document.getElementById("depthLabel")!;
+  const depthLabel = document.getElementById("depthLabel")!;
   depthLabel.innerText = depthRange.value;
   depthRange.addEventListener("input", () => {
     depthLabel.innerText = depthRange.value;
@@ -153,25 +151,27 @@ function initListeners() {
     ratioRange.dispatchEvent(new Event("input"));
   });
 
-  let drawButton = document.getElementById("drawButton") as HTMLButtonElement;
+  const drawButton = document.getElementById("drawButton") as HTMLButtonElement;
   drawButton.addEventListener("click", () => {
     draw();
   });
 
-  let clearButton = document.getElementById("clearButton") as HTMLButtonElement;
+  const clearButton = document.getElementById(
+    "clearButton",
+  ) as HTMLButtonElement;
   clearButton.addEventListener("click", () => {
     clearCanvas();
   });
 
-  let playButton = document.getElementById("playButton") as HTMLButtonElement;
+  const playButton = document.getElementById("playButton") as HTMLButtonElement;
   playButton.addEventListener("click", () => {
-    let updateState = liveUpdateCheck.checked;
+    const updateState = liveUpdateCheck.checked;
     playScript(scriptArea.value);
     liveUpdateCheck.checked = updateState;
     draw();
   });
 
-  let copyLinkButton = document.getElementById(
+  const copyLinkButton = document.getElementById(
     "copyLinkButton",
   ) as HTMLButtonElement;
   copyLinkButton.addEventListener("click", () => {
@@ -192,9 +192,9 @@ function initListeners() {
   });
 
   document.getElementById("exportButton")!.addEventListener("click", () => {
-    let image = new Image();
+    const image = new Image();
     image.src = canvas.toDataURL();
-    let imageContainer = document.getElementById("imageContainer")!;
+    const imageContainer = document.getElementById("imageContainer")!;
     imageContainer.innerHTML = "";
     imageContainer.appendChild(image);
   });
@@ -301,7 +301,7 @@ function showElement(e: HTMLElement) {
 initListeners();
 
 {
-  let paramString = window.location.href.split("?")[1];
+  const paramString = window.location.href.split("?")[1];
   playScript(paramString);
   liveUpdateCheck.checked = true;
 }
@@ -312,7 +312,7 @@ function playScript(script: string) {
     return;
   }
   liveUpdateCheck.checked = false;
-  let splitScript = script.split("\n");
+  const splitScript = script.split("\n");
 
   if (splitScript.length <= 0) {
     return;
@@ -335,14 +335,14 @@ function playScript(script: string) {
       depthRange.dispatchEvent(new Event("input"));
     }
     if (queryString.has("r")) {
-      let parsedRatio = queryString.get("r")!;
+      const parsedRatio = queryString.get("r")!;
       ratioRange.value = parsedRatio;
       ratioSlider.value = parsedRatio;
       ratioRange.dispatchEvent(new Event("input"));
     }
     if (queryString.has("i")) {
-      let invertedString = queryString.get("i");
-      let invertedValue = invertedString === "true" || invertedString === "1";
+      const invertedString = queryString.get("i");
+      const invertedValue = invertedString === "true" || invertedString === "1";
       invertedCheck.checked = invertedValue;
     }
     if (queryString.has("t")) {
