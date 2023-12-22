@@ -3,7 +3,11 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE.md)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/a2486ad2-2e72-4209-94bc-57ab2d0e5068/deploy-status)](https://app.netlify.com/sites/cerulean-hotteok-274274/deploys)
 
-Sample script
+Draw different types of fractals and export the render as an image.
+
+<https://fractals.verybadfrags.com>
+
+## Sample script
 
 ```text
 s=4&d=3&r=1.08&i=1&t=2&lc=%23ff8647&bg=%23000000
