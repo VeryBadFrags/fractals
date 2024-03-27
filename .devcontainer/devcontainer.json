@@ -1,12 +1,9 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
+// README at: https://github.com/devcontainers/templates/tree/main/src/javascript-node
 {
-	"name": "Node.js & TypeScript",
+	"name": "Node.js",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-20-bookworm",
-	"features": {
-		"ghcr.io/devcontainers-contrib/features/pnpm:2": {}
-	},
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:1-20-bookworm",
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -15,7 +12,7 @@
 	"forwardPorts": [5173],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pnpm install"
+	"postCreateCommand": "make node_modules"
 
 	// Configure tool-specific properties.
 	// "customizations": {},
