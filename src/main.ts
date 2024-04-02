@@ -87,13 +87,10 @@ function drawFromPoints(points: Array<Line>) {
   // "#ddddff";
   ctx.strokeStyle = randomColor;
 
-  for (const line of points) {
-    if (!line) {
-      return;
-    }
+  points.forEach((line) => {
     ctx.moveTo(line.start.x, line.start.y);
     ctx.lineTo(line.end.x, line.end.y);
-  }
+  });
 
   ctx.stroke();
 }
