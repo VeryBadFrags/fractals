@@ -7,6 +7,20 @@ Draw different types of fractals and export the render as an image.
 
 <https://fractals.verybadfrags.com>
 
+## Run locally
+
+Enable corepack:
+
+```sh
+corepack enable
+```
+
+Run the site locally:
+
+```sh
+make dev
+```
+
 ## Sample script
 
 ```text
