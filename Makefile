@@ -14,5 +14,9 @@ lint: node_modules
 format:
 	pnpm run format
 
+.PHONY: clean
+clean:
+	pnpm run clean
+
 node_modules: package.json
 	pnpm install
