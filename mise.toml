@@ -1,0 +1,18 @@
+[env]
+# Use Corepack to install pnpm
+MISE_NODE_COREPACK = true
+
+[tasks.dev]
+description = 'Calls your dev script in `package.json`'
+run = 'pnpm run dev -- --open'
+depends = ['pnpm-install']
+
+[tasks.pnpm-install]
+description = 'Installs dependencies with pnpm'
+run = 'pnpm install'
+sources = ['package.json', 'pnpm-lock.yaml', 'mise.toml']
+outputs = ['node_modules/.pnpm/lock.yaml']
+
+[settings]
+# Use the Node version from .nvmrc
+idiomatic_version_file_enable_tools = ['node']
