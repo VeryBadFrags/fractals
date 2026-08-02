@@ -32,7 +32,9 @@ const lineColor = document.getElementById(
 
 const scriptArea = document.getElementById("scriptArea") as HTMLTextAreaElement;
 
-const worker = new Worker(new URL("./worker.ts", import.meta.url));
+const worker = new Worker(new URL("./worker.ts", import.meta.url), {
+	type: "module",
+});
 
 worker.addEventListener(
 	"message",
