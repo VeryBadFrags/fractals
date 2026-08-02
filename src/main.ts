@@ -1,13 +1,14 @@
-import { Line } from "./worker";
 import { Toast } from "bootstrap";
+import { getElementById, mustExist } from "./utils";
+import type { Line } from "./worker";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 canvas.width = document.body.scrollWidth;
 canvas.height = document.body.scrollHeight / 2;
-const ctx = canvas.getContext("2d")!;
+const ctx = mustExist(canvas.getContext("2d"), "2d context not available");
 
-const loading = document.getElementById("loading")!;
-const progressBar = document.getElementById("progress-bar")!;
+const loading = getElementById("loading");
+const progressBar = getElementById("progress-bar");
 
 const strategySelect = document.getElementById(
 	"strategySelect",
@@ -35,7 +36,7 @@ const worker = new Worker(new URL("./worker.ts", import.meta.url));
 
 worker.addEventListener(
 	"message",
-	function (e) {
+	(e) => {
 		progressBar.classList.add("bg-success");
 		progressBar.innerText = "Drawing...";
 
@@ -51,7 +52,7 @@ worker.addEventListener(
 );
 
 function draw() {
-	const depth = parseInt(depthRange.value);
+	const depth = parseInt(depthRange.value, 10);
 
 	if (depth >= 5) {
 		progressBar.innerText = "Generating points...";
@@ -98,12 +99,12 @@ function clearCanvas() {
 }
 
 // BOOTSTRAP
-const toast = document.getElementById("liveToast")!;
+const toast = getElementById("liveToast");
 const copyLinkToast = new Toast(toast, {});
 
 function initListeners() {
 	// Listeners
-	const sidesLabel = document.getElementById("sidesLabel")!;
+	const sidesLabel = getElementById("sidesLabel");
 	sidesLabel.innerText = sidesRange.value;
 	sidesRange.addEventListener("input", () => {
 		sidesLabel.innerText = sidesRange.value;
@@ -112,7 +113,7 @@ function initListeners() {
 		}
 	});
 
-	const depthLabel = document.getElementById("depthLabel")!;
+	const depthLabel = getElementById("depthLabel");
 	depthLabel.innerText = depthRange.value;
 	depthRange.addEventListener("input", () => {
 		depthLabel.innerText = depthRange.value;
@@ -166,36 +167,36 @@ function initListeners() {
 	copyLinkButton.addEventListener("click", () => {
 		const baseUrl = window.location.href.split("?")[0];
 		const params = generateUrlParams();
-		navigator.clipboard.writeText(baseUrl + "?" + params.toString()).then(
-			function () {
+		navigator.clipboard.writeText(`${baseUrl}?${params.toString()}`).then(
+			() => {
 				copyLinkToast.show();
 			},
-			function (err) {
+			(err) => {
 				console.error("Async: Could not copy text: ", err);
 			},
 		);
 	});
 
-	document.getElementById("addScriptButton")!.addEventListener("click", () => {
-		scriptArea.value += generateUrlParams() + "\n";
+	getElementById("addScriptButton").addEventListener("click", () => {
+		scriptArea.value += `${generateUrlParams()}\n`;
 	});
 
-	document.getElementById("exportButton")!.addEventListener("click", () => {
+	getElementById("exportButton").addEventListener("click", () => {
 		const image = new Image();
 		image.src = canvas.toDataURL();
-		const imageContainer = document.getElementById("imageContainer")!;
+		const imageContainer = getElementById("imageContainer");
 		imageContainer.innerHTML = "";
 		imageContainer.appendChild(image);
 	});
 
-	document.getElementById("orientationCheck")!.addEventListener("click", () => {
+	getElementById("orientationCheck").addEventListener("click", () => {
 		if (liveUpdateCheck.checked) {
 			redraw();
 		}
 	});
 
 	strategySelect.addEventListener("change", (e) => {
-		const ratioBox = document.getElementById("ratioBox")!;
+		const ratioBox = getElementById("ratioBox");
 		switch ((e.target as HTMLSelectElement).value) {
 			case "koch":
 				hideElement(ratioBox);
@@ -235,29 +236,29 @@ function initListeners() {
 				liveUpdateCheck.click();
 				break;
 			case "s":
-				document.getElementById("addScriptButton")!.click();
+				getElementById("addScriptButton").click();
 				break;
 			case "p":
-				document.getElementById("playButton")!.click();
+				getElementById("playButton").click();
 				break;
 			case "+":
 			case "=":
-				sidesRange.value = (parseInt(sidesRange.value) + 1).toString();
+				sidesRange.value = (parseInt(sidesRange.value, 10) + 1).toString();
 				sidesRange.dispatchEvent(new Event("input"));
 				break;
 			case "_":
 			case "-":
-				sidesRange.value = (parseInt(sidesRange.value) - 1).toString();
+				sidesRange.value = (parseInt(sidesRange.value, 10) - 1).toString();
 				sidesRange.dispatchEvent(new Event("input"));
 				break;
 			case "[":
 			case "{":
-				depthRange.value = (parseInt(depthRange.value) - 1).toString();
+				depthRange.value = (parseInt(depthRange.value, 10) - 1).toString();
 				depthRange.dispatchEvent(new Event("input"));
 				break;
 			case "]":
 			case "}":
-				depthRange.value = (parseInt(depthRange.value) + 1).toString();
+				depthRange.value = (parseInt(depthRange.value, 10) + 1).toString();
 				depthRange.dispatchEvent(new Event("input"));
 				break;
 		}
@@ -308,40 +309,45 @@ function playScript(script: string) {
 	}
 
 	let queryString = new URLSearchParams(splitScript[0]);
-	if (queryString.has("bg")) {
-		bgColor.value = queryString.get("bg")!;
+	const bg = queryString.get("bg");
+	if (bg !== null) {
+		bgColor.value = bg;
 		clearCanvas();
 	}
 
 	for (const urlParam of splitScript) {
 		queryString = new URLSearchParams(urlParam);
-		if (queryString.has("s")) {
-			sidesRange.value = queryString.get("s")!;
+		const sides = queryString.get("s");
+		if (sides !== null) {
+			sidesRange.value = sides;
 			sidesRange.dispatchEvent(new Event("input"));
 		}
-		if (queryString.has("d")) {
-			depthRange.value = queryString.get("d")!;
+		const depth = queryString.get("d");
+		if (depth !== null) {
+			depthRange.value = depth;
 			depthRange.dispatchEvent(new Event("input"));
 		}
-		if (queryString.has("r")) {
-			const parsedRatio = queryString.get("r")!;
+		const parsedRatio = queryString.get("r");
+		if (parsedRatio !== null) {
 			ratioRange.value = parsedRatio;
 			ratioSlider.value = parsedRatio;
 			ratioRange.dispatchEvent(new Event("input"));
 		}
-		if (queryString.has("i")) {
-			const invertedString = queryString.get("i");
+		const invertedString = queryString.get("i");
+		if (invertedString !== null) {
 			const invertedValue = invertedString === "true" || invertedString === "1";
 			invertedCheck.checked = invertedValue;
 		}
-		if (queryString.has("t")) {
+		const strategyIndex = queryString.get("t");
+		if (strategyIndex !== null) {
 			strategySelect.selectedIndex = Math.max(
-				parseInt(queryString.get("t")!) - 1,
+				parseInt(strategyIndex, 10) - 1,
 				0,
 			);
 		}
-		if (queryString.has("lc")) {
-			lineColor.value = queryString.get("lc")!;
+		const lc = queryString.get("lc");
+		if (lc !== null) {
+			lineColor.value = lc;
 		}
 		draw();
 	}

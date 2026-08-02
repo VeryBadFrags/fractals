@@ -80,12 +80,12 @@ function drawSierpPoly(
 	let end = endPoint;
 
 	for (let i = 0; i < sides; i++) {
-		if (depth == 0) {
+		if (depth === 0) {
 			drawLine(start, end, pointsAcc);
 		} else {
 			const third = getMiddle(start, end, ratio);
 			const twoThird = getMiddle(end, start, ratio);
-			if (outwards == -1) {
+			if (outwards === -1) {
 				drawSierpPoly(
 					sides,
 					depth - 1,
