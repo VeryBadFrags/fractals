@@ -6,13 +6,13 @@ dev: node_modules
 build: node_modules
 	pnpm build
 
-.PHONY: lint
-lint: node_modules
-	pnpm run lint
-
 .PHONY: format
 format:
 	pnpm run format
+
+.PHONY: lint
+lint: node_modules
+	pnpm run lint
 
 .PHONY: clean
 clean:
